@@ -8,9 +8,9 @@ import xlsxwriter
 
 # Setup parameters
 root = Tk()
-program_title = 'WLLR footplate crew rostering program v0.2'
+program_title = 'WLLR footplate crew rostering program v0.3'
 width = '850'
-height = '560'
+height = '600'
 screen_pos_right = '250'
 screen_pos_down = '100'
 background_col = 'black'
@@ -169,7 +169,7 @@ def combine_availability(dir_path,frame_to_delete):
     combined_df = pd.DataFrame()
     for filename in os.listdir(dir_path):
         file_path = os.path.join(dir_path + "/" + filename)
-        person_df = pd.read_excel(file_path,dtype={'Date':str, 'Available':str})
+        person_df = pd.read_excel(file_path, dayfirst=True, parse_dates=[0], dtype={'Available':str})
         name = filename.split('.')[0]
         person_df.insert(0,'Name',[name for i in range(len(person_df))])
         error_check = check_person_df(person_df)
@@ -242,7 +242,8 @@ def availability_manager(locations, blank_roster_entry, frame_to_delete):
     """
     working_roster_expected_cols = ['Date','Timetable','Turn','Points','Driver','Fireman','Trainee']
     working_roster_path = blank_roster_entry.get()
-    working_roster_df = pd.read_csv(working_roster_path, dtype = {'Driver':str, 'Fireman':str, 'Trainee':str})
+    working_roster_df = pd.read_csv(working_roster_path, dayfirst=True, parse_dates=[0],
+        dtype = {'Driver':str, 'Fireman':str, 'Trainee':str})
     error_check = check_import_cols(working_roster_df,working_roster_expected_cols)
     if error_check == 'Passed':
         for i in locations:
@@ -256,13 +257,13 @@ def availability_manager(locations, blank_roster_entry, frame_to_delete):
             available_df = combine_availability(dir_path,frame_to_delete)
             if available_df.empty == True:
                 break
-
             turns_to_cover_df = working_roster_df.loc[working_roster_df[turn_type].isnull()]
             number_of_iterations = len(turns_to_cover_df.index)
 
             for j in range(number_of_iterations):
                 available_df = remove_rostered_days(available_df,working_roster_df,turn_type)
                 available_df = remove_rostered_turns(available_df,working_roster_df,turn_type)
+                print(available_df)
                 count_crew_avail_df = available_df['Date'].value_counts().sort_values(ascending=True)
                 if len(count_crew_avail_df) > 0:
                     working_date = count_crew_avail_df.index[0]
@@ -276,6 +277,73 @@ def availability_manager(locations, blank_roster_entry, frame_to_delete):
             root_setup_0(frame_to_delete)
     else:
         root_setup_error(frame_to_delete,error_check,working_roster_path)
+
+def summary_availability(locations, frame_to_delete):
+    """
+    Loops through the driver, fireman and trainee locations, initiates collection of availability 
+    and creates a summary of availability by day
+    """
+    dir_save_path = filedialog.askdirectory(title='Choose a folder location')
+    for i in locations:
+        if i == locations[0]:
+            turn_type = 'Driver'
+        elif i == locations[1]:
+            turn_type = 'Fireman'
+        else:
+            turn_type = 'Trainee'
+        dir_path = i.get()
+        available_df = combine_availability(dir_path,frame_to_delete)
+        if available_df.empty == True:
+            break  
+        else:
+            save_location = dir_save_path + '/' + turn_type + '_availability.csv'
+            available_df.to_csv(save_location, index=False)
+    root_setup_0(frame_to_delete)
+
+def root_setup_2a(frame_to_delete):
+    """
+    Layout for the second screen of the program - allocation of crews
+    """
+    frame_to_delete.grid_forget()
+
+    frame_2a = Frame(root, bg=background_col, width=width, height=height)
+
+    text_for_label = '''Please use the buttons below to import the availability data received from crews.'''
+    instruction_label = Label(frame_2a, text=text_for_label, bg=background_col, fg=foreground_col, font=font)
+
+    driver = StringVar()
+    fireman = StringVar()
+    trainee = StringVar()
+
+    driver_avail_label = Label (frame_2a, text='Driver availability folder: ', bg=background_col, fg=foreground_col, font=font)
+    driver_avail_entry = Entry(frame_2a, textvariable=driver, width=50)
+    driver_avail_button = Button (frame_2a, text='Browse', width=6, command=partial(browse_directory, driver_avail_entry))
+    fireman_avail_label = Label (frame_2a, text='Fireman availability folder: ', bg=background_col, fg=foreground_col, font=font)
+    fireman_avail_entry = Entry(frame_2a, textvariable=fireman, width=50)
+    fireman_avail_button = Button (frame_2a, text='Browse', width=6, command=partial(browse_directory, fireman_avail_entry))
+    trainee_avail_label = Label (frame_2a, text='Trainee availability folder: ', bg=background_col, fg=foreground_col, font=font)
+    trainee_avail_entry = Entry(frame_2a, textvariable=trainee, width=50)
+    trainee_avail_button = Button (frame_2a, text='Browse', width=6, command=partial(browse_directory, trainee_avail_entry))
+    back_button_2 = Button (frame_2a, text='Back', width=19, command=partial(root_setup_0, frame_2a))
+    
+    locations = [driver_avail_entry, fireman_avail_entry, trainee_avail_entry]
+    function_plus_args = partial(summary_availability, locations, frame_2a)
+    summary_avail_button = Button (frame_2a, text='Create availability summary', width=24, command=function_plus_args)
+
+    frame_2a.grid(row=0, column=0, sticky=W)
+
+    instruction_label.grid(row=0, column=0, sticky=W, padx=25, pady=20, columnspan=2)
+    driver_avail_label.grid(row=1, column=0, sticky=W, padx=25, pady=0)
+    driver_avail_entry.grid(row=1, column=1, sticky=E, padx=0, pady=0)
+    driver_avail_button.grid(row=1, column=2, sticky=W, padx=0, pady=0)
+    fireman_avail_label.grid(row=2, column=0, sticky=W, padx=25, pady=0)
+    fireman_avail_entry.grid(row=2, column=1, sticky=E, padx=0, pady=0)
+    fireman_avail_button.grid(row=2, column=2, sticky=W, padx=0, pady=0)
+    trainee_avail_label.grid(row=3, column=0, sticky=W, padx=25, pady=0)
+    trainee_avail_entry.grid(row=3, column=1, sticky=E, padx=0, pady=0)
+    trainee_avail_button.grid(row=3, column=2, sticky=W, padx=0, pady=0)
+    summary_avail_button.grid(row=5, column=1, sticky=E, padx=0, pady=15)
+    back_button_2.grid(row=6, column=0, sticky=W, padx=25, pady = 20)
 
 def root_setup_2(frame_to_delete):
     """
@@ -461,13 +529,15 @@ def root_setup_0(frame_to_delete=0):
     label_6 = Label (frame_0, text='Step 3: Create a blank roster', bg=background_col, fg=foreground_col, font=font)
     label_7 = Label (frame_0, text='Step 4: Open blank roster file and enter any specific crew allocations', bg=background_col, fg=foreground_col, font=font)
     label_8 = Label (frame_0, text='Step 5: Allocate crews to remaining turns', bg=background_col, fg=foreground_col, font=font)
-    label_9 = Label (frame_0, text='Step 6: Review allocations and amend as necessary', bg=background_col, fg=foreground_col, font=font)
-    label_10 = Label (frame_0, text='Step 7: Generate individual rosters', bg=background_col, fg=foreground_col, font=font)
+    label_9 = Label (frame_0, text='Step 5a: Create availability summaries', bg=background_col, fg=foreground_col, font=font)
+    label_10 = Label (frame_0, text='Step 6: Review allocations and amend as necessary', bg=background_col, fg=foreground_col, font=font)
+    label_11 = Label (frame_0, text='Step 7: Generate individual rosters', bg=background_col, fg=foreground_col, font=font)
 
     button_5 = Button (frame_0, text='Blank availability', width=18, command=partial(root_setup_blank_avail, frame_0))
     button_6 = Button (frame_0, text='Blank roster', width=18, command=partial(root_setup_1, frame_0))
     button_8 = Button (frame_0, text='Allocate crews', width=18, command=partial(root_setup_2, frame_0))
-    button_10 = Button (frame_0, text='Individual rosters', width=18, command=partial(root_setup_3, frame_0))
+    button_9 = Button (frame_0, text='Availability summary', width=18, command=partial(root_setup_2a, frame_0))
+    button_11 = Button (frame_0, text='Individual rosters', width=18, command=partial(root_setup_3, frame_0))
 
     frame_0.grid(row=0, column=0, sticky=W)
     
@@ -482,11 +552,13 @@ def root_setup_0(frame_to_delete=0):
     label_8.grid(row=8, column=0, sticky=W, padx = 25, pady = 10)
     label_9.grid(row=9, column=0, sticky=W, padx = 25, pady = 10)
     label_10.grid(row=10, column=0, sticky=W, padx = 25, pady = 10)
+    label_11.grid(row=11, column=0, sticky=W, padx = 25, pady = 10)
 
     button_5.grid(row=5,column=1,sticky=W)
     button_6.grid(row=6,column=1,sticky=W)
     button_8.grid(row=8,column=1,sticky=W)
-    button_10.grid(row=10,column=1,sticky=W)
+    button_9.grid(row=9,column=1,sticky=W)
+    button_11.grid(row=11,column=1,sticky=W)
 
 def main():
     root_setup_0()
