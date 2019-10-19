@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 *.csv
 tkinter_rostering_program_*
 tkinter_rostering_program-*
 /__pycache__/
 /.vscode/
-=======
-*.csv
->>>>>>> dcf01273da871a380334265551035fbee98e4fa0
