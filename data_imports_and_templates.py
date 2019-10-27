@@ -10,10 +10,10 @@ class Data_Imports():
         """
         Initiates the class
         """
-        self.data = None
+        self.data_import = None
         self.expected_columns = None
 
-    def import_data(self, filepath):
+    def import_data(self, file_path):
         """
         Attempts to imports data from a csv as the timetable and
         checks whether columns are as expected
@@ -21,10 +21,11 @@ class Data_Imports():
         Returns False otherwise
         """
         try:
-            self.data = pd.read_csv(filepath)
-            return np.array_equal(self.data.columns, self.expected_columns)
+            self.data_import = pd.read_csv(file_path)
+            return np.array_equal(self.data_import.columns, self.expected_columns)
         except:
-            return False
+            self.data_import = pd.read_excel(file_path)
+            return np.array_equal(self.data_import.columns, self.expected_columns)
 
 class Data_Exports():
     """
@@ -35,7 +36,7 @@ class Data_Exports():
         """
         Initiates the class
         """
-        self.data = None
+        self.data_export = None
         self.entry_values = ['Y','N']
 
     def export_data(self, filepath=None, sheet_name=None, data_val_cells=None):
@@ -45,7 +46,7 @@ class Data_Exports():
         Adds data validation to cells specified in data_val_cells 
         """
         writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
-        self.data.to_excel(writer, sheet_name=sheet_name, index=False)
+        self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
         workbook = writer.book
         worksheet = writer.sheets[sheet_name]
         workbook.add_format({'border':1})
@@ -64,7 +65,7 @@ class Timetable(Data_Imports):
         """
         Initiates the class
         """
-        self.data = timetable
+        self.data_import = timetable
         self.expected_columns = ['Date','Timetable']
 
 class Crew_Requirements(Data_Imports):
@@ -76,7 +77,7 @@ class Crew_Requirements(Data_Imports):
         """
         Initiates the class
         """
-        self.crew_reqs = crew_reqs
+        self.data_import = crew_reqs
         self.expected_columns = ['Timetable','Turn','Points']
 
 class Availability_Form(Data_Exports):
@@ -91,13 +92,13 @@ class Availability_Form(Data_Exports):
         self.dates = dates
         self.columns = ['Date','Available']
         self.entry_values = ['Y','N']
-        self.data = None
+        self.data_export = None
 
     def get_timetable_dates(self, timetable):
         """
         Populates self.dates from the dates in a timetable
         """
-        self.dates = timetable.data['Date']
+        self.dates = timetable.data_import['Date']
 
     def create_availability_form(self, save_location):
         """
@@ -105,8 +106,8 @@ class Availability_Form(Data_Exports):
         and limits the entry values to self.entry_values
         """
         sheet_name='Availability'
-        self.data = pd.DataFrame(self.dates, columns=self.columns)
-        data_val_cells = ['B'+str(i+2) for i in self.data.index]
+        self.data_export = pd.DataFrame(self.dates, columns=self.columns)
+        data_val_cells = ['B'+str(i+2) for i in self.data_export.index]
         self.export_data(filepath=save_location, sheet_name=sheet_name, data_val_cells=data_val_cells)
 
 class Blank_Roster(Data_Exports):
@@ -120,7 +121,7 @@ class Blank_Roster(Data_Exports):
         """
         self.timetable = timetable
         self.crew_requirements = crew_requirements
-        self.data = None
+        self.data_export = None
         self.blank_columns = ['Driver','Fireman','Trainee']
 
     def create_blank_roster(self, timetable, crew_requirements, save_location):
@@ -130,22 +131,43 @@ class Blank_Roster(Data_Exports):
         sheet_name = 'Roster'
         self.timetable = timetable
         self.crew_requirements = crew_requirements
-        self.data = self.timetable.merge(self.crew_requirements, how='left', on='Timetable')
-        blank_roster_columns = self.data.columns.tolist() + self.blank_columns
-        self.data = self.data.reindex(columns = blank_roster_columns)
+        self.data_export = self.timetable.merge(self.crew_requirements, how='left', on='Timetable')
+        blank_roster_columns = self.data_export.columns.tolist() + self.blank_columns
+        self.data_export = self.data_export.reindex(columns = blank_roster_columns)
         self.export_data(filepath=save_location, sheet_name=sheet_name)
         
-class Availability(Data_Imports):
+class Crew_Member(Data_Imports):
     """
     Availability as input by the user
     """
 
-    def __init__(self, availability=None, name=None):
+    def __init__(self, availability=None, name=None, grade=None):
         """
         Initiates the class
         """
-        self.data = availability
+        self.data_import = availability
         self.name = name
+        self.grade = grade
         self.expected_columns = ['Date','Available']
 
+class Master_Availability(Data_Exports):
+    """
+    Master list of availability
+    """
 
+    def __init__(self, individual_availability=None):
+        """
+        Initiates the class
+        """
+        self.individual_availability = individual_availability
+        self.data_export = pd.DataFrame()
+
+    def append_availability(self, crew_member):
+        """
+        Appends an individual's availability to the master list
+        """
+        availability = crew_member.data_import
+        availability.insert(0,'Name',[crew_member.name for i in range(len(availability))])
+        self.data_export = self.data_export.append(availability)
+        self.data_export = self.data_export[self.data_export['Available'] == 'Y']
+        
