@@ -61,9 +61,14 @@ def create_master_availability(availability_folders, save_location):
 # -------------------------------------------------------------------------------------------------------------
 # Calls below
 
-create_blank_availability(timetable_path,avail_save_location)
+# To do
+# 1. Date formats for output sheets
+# 2. Autofit columns function for outputs
+# 3. Continue with allocating availability to turns
+
+# create_blank_availability(timetable_path,avail_save_location)
 
 # create_blank_roster(timetable_path,crew_reqs_path,blank_roster_save_location)
 
-# create_master_availability(availability_folders,master_availability_save_location)
+create_master_availability(availability_folders,master_availability_save_location)
 
