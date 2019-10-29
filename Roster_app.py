@@ -9,8 +9,8 @@ from data_imports_and_templates import Master_Roster
 
 # Dummy inputs
 
-timetable_path = './/Test input data//Timetable.csv'
-crew_reqs_path = './/Test input data//Crew requirements.csv'
+timetable_path = './/Test input data//Timetable.xlsx'
+crew_reqs_path = './/Test input data//Crew requirements.xlsx'
 
 avail_save_location = './/Test output data//Test_Avail_Form.xlsx'
 blank_roster_save_location = './/Test output data//Test_Blank_Roster.xlsx'
@@ -61,9 +61,9 @@ def create_master_availability(availability_folders, save_location):
 # -------------------------------------------------------------------------------------------------------------
 # Calls below
 
-# create_blank_availability(timetable_path,avail_save_location)
+create_blank_availability(timetable_path,avail_save_location)
 
 # create_blank_roster(timetable_path,crew_reqs_path,blank_roster_save_location)
 
-create_master_availability(availability_folders,master_availability_save_location)
+# create_master_availability(availability_folders,master_availability_save_location)
 
