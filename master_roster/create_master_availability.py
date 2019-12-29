@@ -28,6 +28,13 @@ class Crew_Members():
         Initiates the class
         """
         self.data = []
+        self.points_tally = pd.DataFrame()
+
+    def create_points_tally(self):
+        """
+        Creates the points tally attribute containing a list of crew and their points initially set to zero
+        """
+        self.points_tally = pd.DataFrame([[crew_member.name,0] for crew_member in self.data],columns=['Name','Points'])
 
 class Master_Availability(Data_Exports):
     """
@@ -65,15 +72,3 @@ class Master_Availability(Data_Exports):
         availability.insert(0,'Grade',[crew_member.grade for i in range(len(availability))])
         self.data_export = self.data_export.append(availability)
         self.data_export = self.data_export[self.data_export['Available'] == 'Y']
-        
-class Master_Roster(Data_Imports,Data_Exports):
-    """
-    Master roster
-    """
-
-    def __init__(self):
-        """
-        Initiates the class
-        """
-        self.data_import = None
-        self.data_export = None

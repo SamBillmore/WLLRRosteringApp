@@ -5,7 +5,7 @@ from blank_roster.create_blank_roster import Blank_Roster
 from master_roster.create_master_availability import Crew_Member
 from master_roster.create_master_availability import Crew_Members
 from master_roster.create_master_availability import Master_Availability
-from master_roster.create_master_availability import Master_Roster
+from master_roster.create_master_roster import Master_Roster
 
 # Dummy inputs
 
@@ -20,6 +20,7 @@ availability_folders = {
     'Fireman':'.//Test input data//02 Fireman availability',
     'Trainee':'.//Test input data//03 Trainee availability'
 }
+working_roster_path = './/Test input data//Test_Working_Roster.xlsx'
 master_roster_save_location = './/Test output data//Test_Master_roster.xlsx'
 master_avail_save_location = './/Test output data//Test_Master_availability.xlsx'
 
@@ -45,26 +46,15 @@ def create_blank_roster(timetable_path, crew_reqs_path, save_location):
     crew_reqs.import_data(crew_reqs_path)
     blank_roster.create_blank_roster(timetable.data_import,crew_reqs.data_import,save_location)
 
-def master_roster(availability_folders,master_avail_save_location,master_roster_save_location):
+def master_roster(working_roster_path,availability_folders,master_avail_save_location,master_roster_save_location):
     """
     Master function to control:
     - creating master availability
     - algorithm to allocate crews to turns
     """
-    create_master_availability(availability_folders,master_avail_save_location)
-
-def create_master_availability(availability_folders, save_location):
-    """
-    Creating master availability
-    """
-    sheet_name = 'master_availability'
-    crew_members = Crew_Members()
-    master_availability = Master_Availability()
-    for key,value in  availability_folders.items():
-        master_availability.create_master_availability(key, value, crew_members)
-    master_availability.export_data(filepath=save_location,sheet_name=sheet_name)
-    
-    
+    master_roster = Master_Roster()
+    master_roster.import_data(working_roster_path)
+    master_roster.create_master_roster(availability_folders,master_avail_save_location,master_roster_save_location)
 
 # -------------------------------------------------------------------------------------------------------------
 # Calls below
@@ -73,9 +63,10 @@ def create_master_availability(availability_folders, save_location):
 # Complete - 0. Refactor code into modules
 # Complete - 1. Date formats for output sheets 
 # Complete - 2. Autofit columns function for outputs
-# 3. Continue with allocating availability to turns
+# Complete - 3. Create master function to call method for master availability
+# 4. Complete method 'allocate_turns()'
 
 if __name__ =='__main__':
     # create_blank_availability(timetable_path,avail_save_location)
     # create_blank_roster(timetable_path,crew_reqs_path,blank_roster_save_location)
-    master_roster(availability_folders,master_avail_save_location,master_roster_save_location)
+    master_roster(working_roster_path,availability_folders,master_avail_save_location,master_roster_save_location)
