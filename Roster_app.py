@@ -64,7 +64,9 @@ def master_roster(working_roster_path,availability_folders,master_avail_save_loc
 # Complete - 1. Date formats for output sheets 
 # Complete - 2. Autofit columns function for outputs
 # Complete - 3. Create master function to call method for master availability
-# 4. Complete method 'allocate_turns()'
+# To test - 4. Complete method 'allocate_turns()'
+# 5. Create individual rosters and print to pdf
+# 6. Create user interface
 
 if __name__ =='__main__':
     # create_blank_availability(timetable_path,avail_save_location)
