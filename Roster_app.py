@@ -5,6 +5,9 @@ from blank_roster.create_blank_roster import Blank_Roster
 from master_roster.create_master_roster import Master_Roster
 from individual_rosters.create_individual_rosters import Individual_Rosters
 
+
+# -------------------------------------------------------------------------------------------------------------
+
 # Dummy inputs
 
 timetable_path = './/Test input data//Timetable.xlsx'
@@ -24,6 +27,9 @@ master_avail_save_location = './/Test output data//Test_Master_Availability.xlsx
 
 final_roster_path = './/Test input data//Test_Final_Roster.xlsx'
 individual_roster_save_folder = './/Test output data//Individual Rosters'
+
+
+# -------------------------------------------------------------------------------------------------------------
 
 def create_blank_availability(timetable_path,save_location):
     """
@@ -67,7 +73,6 @@ def individual_rosters(final_roster_path,individual_roster_save_folder):
 
 
 # -------------------------------------------------------------------------------------------------------------
-# Calls below
 
 # To do
 # Complete - 0. Refactor code into modules
