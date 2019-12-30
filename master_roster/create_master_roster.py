@@ -110,7 +110,7 @@ class Master_Roster(Data_Imports,Data_Exports):
         - adding points to self.crew_members.points_tally
         - removing person from self.working_availability for working_date
         """
-        # Updte self.data_export
+        # Update self.data_export
         working_day = self.data_export[(self.data_export['Date']==working_date) & (self.data_export[grade].isna())]
         row_to_insert = working_day.sort_values('Points',ascending=False).index[0]
         self.data_export.at[row_to_insert,grade] = person_for_turn

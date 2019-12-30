@@ -62,7 +62,6 @@ def master_roster(working_roster_path,availability_folders,master_avail_save_loc
     master_roster.import_data(working_roster_path)
     master_roster.create_master_roster(availability_folders,master_avail_save_location,master_roster_save_location)
 
-
 def individual_rosters(final_roster_path,individual_roster_save_folder):
     """
     Create individual rosters from the final roster
@@ -80,7 +79,11 @@ def individual_rosters(final_roster_path,individual_roster_save_folder):
 # Complete - 2. Autofit columns function for outputs
 # Complete - 3. Create master function to call method for master availability
 # To test - 4. Complete method 'allocate_turns()'
+# Check whether code needs refactoring
+# Refactor removing person from working_availability and adding point to points_tally
 # Complete - 5. Create individual rosters and print to pdf
+# Move print to pdf to import_export
+# Check Crew requirements - should be in blank roster?
 # 6. Error checking for imports
 # 7. Create user interface
 
