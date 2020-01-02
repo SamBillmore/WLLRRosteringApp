@@ -3,6 +3,18 @@ import pandas as pd
 from import_export.import_export_classes import Data_Imports
 from import_export.import_export_classes import Data_Exports
 
+class Crew_Requirements(Data_Imports):
+    """
+    Crew requirements as input by the user
+    """
+
+    def __init__(self, crew_reqs=None):
+        """
+        Initiates the class
+        """
+        self.data_import = crew_reqs
+        self.expected_columns = ['Timetable','Turn','Points']
+
 class Blank_Roster(Data_Exports):
     """
     Blank roster

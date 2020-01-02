@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 from win32com.client import Dispatch
+import matplotlib.pyplot as plt
 
 class Data_Imports():
     """
@@ -74,3 +75,16 @@ class Data_Exports():
         excel.ActiveSheet.Columns.AutoFit()
         wb.Save()
         wb.Close()
+
+    def print_df_to_pdf(self,df,filepath):
+        """
+        Saves a pandas dataframe to a pdf using matplotlib
+        """
+        fig = plt.figure()
+        ax=fig.add_subplot(111)
+        cell_text = []
+        for row in range(len(df)):
+            cell_text.append(df.iloc[row])
+        ax.table(cellText=cell_text, colLabels=df.columns, loc='center')
+        ax.axis('off')
+        fig.savefig(filepath)

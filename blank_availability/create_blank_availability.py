@@ -15,18 +15,6 @@ class Timetable(Data_Imports):
         self.data_import = timetable
         self.expected_columns = ['Date','Timetable']
 
-class Crew_Requirements(Data_Imports):
-    """
-    Crew requirements as input by the user
-    """
-
-    def __init__(self, crew_reqs=None):
-        """
-        Initiates the class
-        """
-        self.data_import = crew_reqs
-        self.expected_columns = ['Timetable','Turn','Points']
-
 class Availability_Form(Data_Exports):
     """
     Blank availability forms

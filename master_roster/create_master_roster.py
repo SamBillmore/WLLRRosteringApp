@@ -18,39 +18,50 @@ class Master_Roster(Data_Imports,Data_Exports):
         self.data_import = None
         self.master_availability = None
         self.working_availability = None
-        self.crew_members = None
+        self.crew_members_points = None
         self.data_export = None
         self.expected_columns = ['Date','Timetable','Turn','Points','Driver','Fireman','Trainee']
 
     def create_master_roster(self,availability_folders,master_avail_save_location,master_roster_save_location):
         """
         Controlling function for creating master roster
+        Returns file_import_test, filename (if file failed) and expected columns
         """
         self.data_export = self.data_import
-        self.create_master_availability(availability_folders,master_avail_save_location)
+        file_import_test,file_name,expected_columns = self.collate_input_data(availability_folders,master_avail_save_location)
+        if file_import_test == False:
+            return file_import_test,file_name,expected_columns
         for key in availability_folders.keys():
             self.allocate_crew_members_to_turns(key)
         self.data_export.pop('Points')
         self.export_data(filepath=master_roster_save_location,sheet_name='master_roster')
+        return file_import_test,file_name,expected_columns
 
-    def create_master_availability(self,availability_folders,save_location):
+    def collate_input_data(self,availability_folders,save_location):
         """
-        Create master availability and create the zeroed points tally
+        Creates master availability from imports (including checking imports)
+        Creates the zeroed points tally
+        Save master availability to Excel
+        Returns file_import_test, filename (if file failed) and expected columns
         """
         crew_members = Crew_Members()
         master_availability = Master_Availability()
         for key,value in  availability_folders.items():
-            master_availability.create_master_availability(key,value,crew_members)
+            file_import_test,file_name,expected_columns = master_availability.create_master_availability(key,value,crew_members)
+            if file_import_test == False:
+                return file_import_test,file_name,expected_columns
+        master_availability.data_export.sort_values(by=['Grade','Date'],inplace=True)
         master_availability.export_data(filepath=save_location,sheet_name='master_availability')
         crew_members.create_points_tally()
         self.master_availability = master_availability.data_export
-        self.crew_members = crew_members
+        self.crew_members_points = crew_members.points_tally
+        return file_import_test,file_name,expected_columns
 
     def allocate_crew_members_to_turns(self,grade):
         """
         Allocates individuals to turns for a single turn type based on:
         - availability in self.data_import
-        - points recorded in self.crew_members.points_tally
+        - points recorded in self.crew_members_points
         """
         # Filter master_availability for turn type and save to working_availability
         self.working_availability = self.master_availability[self.master_availability['Grade']==grade]
@@ -78,12 +89,9 @@ class Master_Roster(Data_Imports,Data_Exports):
             if pd.notnull(row[grade]):
                 crew_member = row[grade]
                 points_to_add = row['Points']
-                row_index = self.crew_members.points_tally.index[self.crew_members.points_tally['Name']==crew_member][0]
-                existing_points = self.crew_members.points_tally['Points'][row_index]
-                self.crew_members.points_tally.at[row_index,'Points'] = points_to_add + existing_points
+                self.add_points(crew_member,points_to_add)
                 date_to_remove = row['Date']
-                df = self.working_availability
-                self.working_availability = df[(df.Name != crew_member) | (df.Date != date_to_remove)]
+                self.remove_person_from_working_availability(crew_member,date_to_remove)
 
     def remove_rostered_days(self,grade):
         """
@@ -98,7 +106,7 @@ class Master_Roster(Data_Imports,Data_Exports):
         Finds crew member for specific date with lowest number of points
         """
         left_df = self.working_availability[self.working_availability['Date']==working_date]
-        right_df = self.crew_members.points_tally
+        right_df = self.crew_members_points
         merged_df = pd.merge(left_df,right_df, left_on = 'Name', right_on = 'Name', how = 'left')
         merged_df.sort_values('Points',ascending=True,inplace=True)
         return merged_df['Name'][0]
@@ -107,19 +115,30 @@ class Master_Roster(Data_Imports,Data_Exports):
         """
         Allocate person to turn by:
         - updating self.data_export by allocating person to highest scoring turn
-        - adding points to self.crew_members.points_tally
+        - adding points to self.crew_members_points
         - removing person from self.working_availability for working_date
         """
         # Update self.data_export
-        working_day = self.data_export[(self.data_export['Date']==working_date) & (self.data_export[grade].isna())]
-        row_to_insert = working_day.sort_values('Points',ascending=False).index[0]
+        working_day_blanks = self.data_export[(self.data_export['Date']==working_date) & (self.data_export[grade].isna())]
+        row_to_insert = working_day_blanks.sort_values('Points',ascending=False).index[0]
         self.data_export.at[row_to_insert,grade] = person_for_turn
         # Remove person from self.working_availability for working_date
-        date_to_remove = working_date
-        df = self.working_availability
-        self.working_availability = df[(df.Name != person_for_turn) | (df.Date != date_to_remove)]
-        # Add points to self.crew_members.points_tally
+        self.remove_person_from_working_availability(person_for_turn,working_date)
+        # Add points to self.crew_members_points
         points_to_add = self.data_export['Points'][row_to_insert]
-        row_index = self.crew_members.points_tally.index[self.crew_members.points_tally['Name']==person_for_turn][0]
-        existing_points = self.crew_members.points_tally['Points'][row_index]
-        self.crew_members.points_tally.at[row_index,'Points'] = points_to_add + existing_points
+        self.add_points(person_for_turn,points_to_add)
+
+    def add_points(self,person,points_to_add):
+        """
+        Adds points for person to self.crew_member_points
+        """
+        row_index = self.crew_members_points.index[self.crew_members_points['Name']==person][0]
+        existing_points = self.crew_members_points['Points'][row_index]
+        self.crew_members_points.at[row_index,'Points'] = points_to_add + existing_points
+
+    def remove_person_from_working_availability(self,person,date_to_remove):
+        """
+        Removes person from working availability for a specific day
+        """
+        df = self.working_availability
+        self.working_availability = df[(df.Name != person) | (df.Date != date_to_remove)]

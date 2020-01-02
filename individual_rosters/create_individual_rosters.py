@@ -1,10 +1,10 @@
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 
 from import_export.import_export_classes import Data_Imports
+from import_export.import_export_classes import Data_Exports
 
-class Individual_Rosters(Data_Imports):
+class Individual_Rosters(Data_Imports,Data_Exports):
     """
     Create individual rosters for each crew member
     """
@@ -34,16 +34,3 @@ class Individual_Rosters(Data_Imports):
                 indiv_roster_df = self.data_import[driver_filter | fireman_filter | trainee_filter]
                 indiv_save_path = os.path.join(save_location,r'Individual roster_'+indiv+'.pdf')
                 self.print_df_to_pdf(indiv_roster_df,indiv_save_path)
-
-    def print_df_to_pdf(self,df,filepath):
-        """
-        Saves a pandas dataframe to a pdf using matplotlib
-        """
-        fig = plt.figure()
-        ax=fig.add_subplot(111)
-        cell_text = []
-        for row in range(len(df)):
-            cell_text.append(df.iloc[row])
-        ax.table(cellText=cell_text, colLabels=df.columns, loc='center')
-        ax.axis('off')
-        fig.savefig(filepath)
