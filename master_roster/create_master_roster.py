@@ -4,7 +4,6 @@ from import_export.import_export_classes import Data_Imports
 from import_export.import_export_classes import Data_Exports
 
 from master_roster.create_master_availability import Crew_Members
-from master_roster.create_master_availability import Master_Availability
 
 class Master_Roster(Data_Imports,Data_Exports):
     """
@@ -22,22 +21,21 @@ class Master_Roster(Data_Imports,Data_Exports):
         self.data_export = None
         self.expected_columns = ['Date','Timetable','Turn','Points','Driver','Fireman','Trainee']
 
-    def create_master_roster(self,availability_folders,master_avail_save_location,master_roster_save_location):
+    def create_master_roster(self,availability_folders,master_availability): # ,master_roster_save_location):
         """
         Controlling function for creating master roster
         Returns file_import_test, filename (if file failed) and expected columns
         """
         self.data_export = self.data_import
-        file_import_test,file_name,expected_columns = self.collate_input_data(availability_folders,master_avail_save_location)
+        file_import_test,file_name,expected_columns = self.collate_input_data(availability_folders,master_availability)
         if file_import_test == False:
             return file_import_test,file_name,expected_columns
         for key in availability_folders.keys():
             self.allocate_crew_members_to_turns(key)
         self.data_export.pop('Points')
-        self.export_data(filepath=master_roster_save_location,sheet_name='master_roster')
         return file_import_test,file_name,expected_columns
 
-    def collate_input_data(self,availability_folders,save_location):
+    def collate_input_data(self,availability_folders,master_availability):
         """
         Creates master availability from imports (including checking imports)
         Creates the zeroed points tally
@@ -45,13 +43,11 @@ class Master_Roster(Data_Imports,Data_Exports):
         Returns file_import_test, filename (if file failed) and expected columns
         """
         crew_members = Crew_Members()
-        master_availability = Master_Availability()
         for key,value in  availability_folders.items():
             file_import_test,file_name,expected_columns = master_availability.create_master_availability(key,value,crew_members)
             if file_import_test == False:
                 return file_import_test,file_name,expected_columns
         master_availability.data_export.sort_values(by=['Grade','Date'],inplace=True)
-        master_availability.export_data(filepath=save_location,sheet_name='master_availability')
         crew_members.create_points_tally()
         self.master_availability = master_availability.data_export
         self.crew_members_points = crew_members.points_tally
