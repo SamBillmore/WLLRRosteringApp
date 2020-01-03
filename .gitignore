@@ -1,6 +1,3 @@
-*.csv
-tkinter_rostering_program_*
-tkinter_rostering_program-*
 /__pycache__/
 */__pycache__/
 /.vscode/
