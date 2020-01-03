@@ -12,6 +12,7 @@ from blank_roster.create_blank_roster import Crew_Requirements
 from blank_roster.create_blank_roster import Blank_Roster
 from master_roster.create_master_roster import Master_Roster
 from master_roster.create_master_availability import Master_Availability
+from individual_rosters.create_individual_rosters import Individual_Rosters
 
 class App(tk.Tk):
     """
@@ -27,7 +28,7 @@ class App(tk.Tk):
 
         self.title('WLLR footplate crew rostering program')
         self.geometry('850x600+250+100')
-        self.frame_names_list = (HomeScreen,BlankAvailabilityScreen,BlankRosterScreen,AllocateCrewsScreen,MasterAvailabilityScreen,ErrorScreen)
+        self.frame_names_list = (HomeScreen,BlankAvailabilityScreen,BlankRosterScreen,AllocateCrewsScreen,MasterAvailabilityScreen,IndividualRostersScreen,ErrorScreen)
         self.frames = {}
         self.background_col = 'black'
         self.foreground_col = 'white'
@@ -103,7 +104,7 @@ class HomeScreen(tk.Frame):
         self.step_2_button = Button (self, text='Blank availability', width=18, command=lambda: controller.show_frame(BlankAvailabilityScreen))
         self.step_3_button = Button (self, text='Blank roster', width=18, command=lambda: controller.show_frame(BlankRosterScreen))
         self.step_5_button = Button (self, text='Allocate crews', width=18, command=lambda: controller.show_frame(AllocateCrewsScreen))
-        self.step_7_button = Button (self, text='Individual rosters', width=18)
+        self.step_7_button = Button (self, text='Individual rosters', width=18, command=lambda: controller.show_frame(IndividualRostersScreen))
         
         self.picture.grid(row=0, column=0, padx = 5, pady = 5, columnspan=2)
         self.intro_label.grid(row=1, column=0, padx = 25, pady = 15, columnspan=2)
@@ -252,7 +253,6 @@ class AllocateCrewsScreen(tk.Frame):
         self.blank_roster_label = Label (self, text='Working roster location: ', bg=background_col, fg=foreground_col, font=font)
         self.blank_roster_entry = Entry(self, width=50)
         self.blank_roster_button = Button (self, text='Browse', width=6, command=lambda: self.controller.browse_file(self.blank_roster_entry))
-
         self.create_timetable_button = Button (self, text='Allocate crews to roster', width=24, command=lambda: self.master_roster(self.blank_roster_entry.get(),self.driver_avail_entry.get(),self.fireman_avail_entry.get(),self.trainee_avail_entry.get()))
         self.back_button = Button (self, text='Back', width=19, command=lambda: self.controller.show_frame(HomeScreen))
 
@@ -351,24 +351,38 @@ class IndividualRostersScreen(tk.Frame):
         self.controller = controller
         self.parent = parent
 
+        self.intro_label = Label (self, text='Create individual rosters from the master roster', bg=background_col, fg=foreground_col, font=font)
         self.fin_roster_label = Label (self, text='Finalised roster: ', bg=background_col, fg=foreground_col, font=font)
         self.fin_roster_entry = Entry(self, width=50)
-        self.fin_roster_button = Button (self, text='Browse', width=6)
+        self.fin_roster_button = Button (self, text='Browse', width=6, command=lambda: self.controller.browse_file(self.fin_roster_entry))
         self.save_folder_label = Label (self, text='Save location: ', bg=background_col, fg=foreground_col, font=font)
         self.save_folder_entry = Entry(self, width=50)
-        self.save_folder_button = Button (self, text='Browse', width=6)
-        self.create_indiv_roster_button = Button (self, text='Create individual rosters', width=25)
-        self.back_button = Button (self, text='Back', width=19)
+        self.save_folder_button = Button (self, text='Browse', width=6, command=lambda: self.controller.browse_directory(self.save_folder_entry))
+        self.create_indiv_roster_button = Button (self, text='Create individual rosters', width=25, command=lambda: self.individual_rosters(self.fin_roster_entry.get(),self.save_folder_entry.get()))
+        self.back_button = Button (self, text='Back', width=19, command=lambda: self.controller.show_frame(HomeScreen))
 
-        self.fin_roster_label.grid(row=0, column=0, sticky='W', padx=25, pady=20)
-        self.fin_roster_entry.grid(row=0, column=1, sticky='W', padx=0, pady=0)
-        self.fin_roster_button.grid(row=0, column=2, sticky='E', padx=0, pady=0)
-        self.save_folder_label.grid(row=1, column=0, sticky='W', padx=25, pady=20)
-        self.save_folder_entry.grid(row=1, column=1, sticky='W', padx=0, pady=0)
-        self.save_folder_button.grid(row=1, column=2, sticky='E', padx=0, pady=0)
-        self.create_indiv_roster_button.grid(row=2, column=1, sticky='E', padx=0, pady=15)
-        self.back_button.grid(row=3, column=0, sticky='W', padx=25, pady = 20)
+        self.intro_label.grid(row=0, column=0, sticky='W', padx=25, pady=20, columnspan=2)
+        self.fin_roster_label.grid(row=1, column=0, sticky='W', padx=25, pady=20)
+        self.fin_roster_entry.grid(row=1, column=1, sticky='W', padx=0, pady=0)
+        self.fin_roster_button.grid(row=1, column=2, sticky='E', padx=0, pady=0)
+        self.save_folder_label.grid(row=2, column=0, sticky='W', padx=25, pady=20)
+        self.save_folder_entry.grid(row=2, column=1, sticky='W', padx=0, pady=0)
+        self.save_folder_button.grid(row=2, column=2, sticky='E', padx=0, pady=0)
+        self.create_indiv_roster_button.grid(row=3, column=1, sticky='E', padx=0, pady=15)
+        self.back_button.grid(row=4, column=0, sticky='W', padx=25, pady = 20)
 
+    def individual_rosters(self,final_roster_path,individual_roster_save_folder):
+        """
+        Create individual rosters from the final roster
+        """
+        individual_rosters = Individual_Rosters()
+        file_import_test = individual_rosters.import_data(final_roster_path)
+        if file_import_test:
+            individual_rosters.create_individual_rosters(individual_roster_save_folder)
+            self.controller.show_frame(HomeScreen)
+        else:
+            self.controller.frames[ErrorScreen].update_error_messages(final_roster_path,individual_rosters.expected_columns)
+            self.controller.show_frame(ErrorScreen)
 
 class ErrorScreen(tk.Frame):
     """
