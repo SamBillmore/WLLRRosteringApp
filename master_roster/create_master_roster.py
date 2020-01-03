@@ -128,9 +128,10 @@ class Master_Roster(Data_Imports,Data_Exports):
         """
         Adds points for person to self.crew_member_points
         """
-        row_index = self.crew_members_points.index[self.crew_members_points['Name']==person][0]
-        existing_points = self.crew_members_points['Points'][row_index]
-        self.crew_members_points.at[row_index,'Points'] = points_to_add + existing_points
+        if person in self.crew_members_points['Name']:
+            row_index = self.crew_members_points.index[self.crew_members_points['Name']==person][0]
+            existing_points = self.crew_members_points['Points'][row_index]
+            self.crew_members_points.at[row_index,'Points'] = points_to_add + existing_points
 
     def remove_person_from_working_availability(self,person,date_to_remove):
         """
