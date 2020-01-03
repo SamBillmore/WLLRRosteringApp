@@ -3,6 +3,7 @@ from tkinter import Button
 from tkinter import Label
 from tkinter import PhotoImage
 import os
+import sys
 
 from user_interface.blank_availability_screen import BlankAvailabilityScreen
 from user_interface.blank_roster_screen import BlankRosterScreen
@@ -64,5 +65,8 @@ class HomeScreen(tk.Frame):
         """
         Create full filepath to picture
         """
-        base_path = os.path.abspath(".")
-        return os.path.join(base_path, relative_path)
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        else:
+            base_path = os.path.abspath(".")
+            return os.path.join(base_path, relative_path)
