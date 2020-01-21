@@ -16,7 +16,7 @@ class Crew_Member(Data_Imports):
         self.data_import = availability
         self.name = name
         self.grade = grade
-        self.expected_columns = ['Date','Available']
+        self.expected_columns = {'Date':object,'Available':object}
 
 class Crew_Members():
     """

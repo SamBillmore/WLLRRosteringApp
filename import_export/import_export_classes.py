@@ -18,21 +18,21 @@ class Data_Imports():
 
     def import_data(self, file_path):
         """
-        Attempts to imports data from a csv as the timetable and
+        Attempts to import data from a csv or xlsx and
         checks whether columns are as expected
         Returns True if import completes and column headers are correct
         Returns False otherwise
         """
         try:
-            self.data_import = pd.read_csv(file_path)
+            try:
+                self.data_import = pd.read_csv(file_path,dtype=self.expected_columns)
+            except:
+                self.data_import = pd.read_excel(file_path,dtype=self.expected_columns)
             if 'Date' in self.data_import.columns:
-                self.data_import['Date'] = self.data_import['Date'].dt.date
-            return np.array_equal(self.data_import.columns, self.expected_columns)
+                self.data_import['Date'] = pd.to_datetime(self.data_import['Date'])
+            return np.array_equal(self.data_import.columns, list(self.expected_columns.keys()))
         except:
-            self.data_import = pd.read_excel(file_path)
-            if 'Date' in self.data_import.columns:
-                self.data_import['Date'] = self.data_import['Date'].dt.date
-            return np.array_equal(self.data_import.columns, self.expected_columns)
+            return False
 
 class Data_Exports():
     """
@@ -52,12 +52,11 @@ class Data_Exports():
         Includes formatting of columns and header
         Adds data validation to cells specified in data_val_cells 
         """
-        writer = pd.ExcelWriter(filepath, engine='xlsxwriter')
+        writer = pd.ExcelWriter(filepath, engine='xlsxwriter', date_format='ddd dd-mm-yyyy', datetime_format='ddd dd-mm-yyyy')
         self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
         workbook = writer.book
         worksheet = writer.sheets[sheet_name]
         workbook.add_format({'border':1})
-        # worksheet.set_column(0,0,11)
         if data_val_cells:
             for i in data_val_cells:
                 worksheet.data_validation(i, {'validate':'list', 'source':self.entry_values})

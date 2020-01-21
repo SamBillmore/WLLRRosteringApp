@@ -13,7 +13,7 @@ class Timetable(Data_Imports):
         Initiates the class
         """
         self.data_import = timetable
-        self.expected_columns = ['Date','Timetable']
+        self.expected_columns = {'Date':object,'Timetable':object}
 
 class Availability_Form(Data_Exports):
     """

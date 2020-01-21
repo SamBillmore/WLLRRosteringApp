@@ -14,7 +14,7 @@ class Individual_Rosters(Data_Imports,Data_Exports):
         Initiates the class
         """
         self.data_import = None
-        self.expected_columns = ['Date','Timetable','Turn','Driver','Fireman','Trainee']
+        self.expected_columns = {'Date':object,'Timetable':object,'Turn':int,'Driver':object,'Fireman':object,'Trainee':object}
         self.fill_na = ''
 
     def create_individual_rosters(self,save_location):

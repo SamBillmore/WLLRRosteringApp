@@ -19,9 +19,9 @@ class Master_Roster(Data_Imports,Data_Exports):
         self.working_availability = None
         self.crew_members_points = None
         self.data_export = None
-        self.expected_columns = ['Date','Timetable','Turn','Points','Driver','Fireman','Trainee']
+        self.expected_columns = {'Date':object,'Timetable':object,'Turn':int,'Points':int,'Driver':object,'Fireman':object,'Trainee':object}
 
-    def create_master_roster(self,availability_folders,master_availability): # ,master_roster_save_location):
+    def create_master_roster(self,availability_folders,master_availability):
         """
         Controlling function for creating master roster
         Returns file_import_test, filename (if file failed) and expected columns

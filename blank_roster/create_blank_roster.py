@@ -13,7 +13,7 @@ class Crew_Requirements(Data_Imports):
         Initiates the class
         """
         self.data_import = crew_reqs
-        self.expected_columns = ['Timetable','Turn','Points']
+        self.expected_columns = {'Timetable':object,'Turn':int,'Points':int}
 
 class Blank_Roster(Data_Exports):
     """
