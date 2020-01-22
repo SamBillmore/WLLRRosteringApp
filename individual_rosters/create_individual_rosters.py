@@ -34,7 +34,10 @@ class Individual_Rosters(Data_Imports,Data_Exports):
                 indiv_roster_df = self.data_import[driver_filter | fireman_filter | trainee_filter]
                 indiv_roster_df = self.change_date_format(indiv_roster_df,'Date')
                 indiv_save_path = os.path.join(save_location,r'Individual roster_'+indiv+'.pdf')
-                self.print_df_to_pdf(indiv_roster_df,indiv_save_path)
+                export_test = self.print_df_to_pdf(indiv_roster_df,indiv_save_path)
+                if export_test == False:
+                    return export_test
+        return export_test
 
     def change_date_format(self,df,date_column):
         """

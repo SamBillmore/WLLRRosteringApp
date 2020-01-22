@@ -36,5 +36,8 @@ class MasterAvailabilityScreen(tk.Frame):
         Save master availability
         """
         master_avail_save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
-        self.master_availability.export_data(filepath=master_avail_save_location,sheet_name='master_availability')
-        self.controller.show_frame('HomeScreen')
+        export_test = self.master_availability.export_data(filepath=master_avail_save_location,sheet_name='master_availability')
+        if export_test:
+            self.controller.show_frame('HomeScreen')
+        else:
+            self.controller.show_frame('ErrorScreenExport')

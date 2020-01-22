@@ -52,16 +52,20 @@ class Data_Exports():
         Includes formatting of columns and header
         Adds data validation to cells specified in data_val_cells 
         """
-        writer = pd.ExcelWriter(filepath, engine='xlsxwriter', date_format='ddd dd-mm-yyyy', datetime_format='ddd dd-mm-yyyy')
-        self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
-        workbook = writer.book
-        worksheet = writer.sheets[sheet_name]
-        workbook.add_format({'border':1})
-        if data_val_cells:
-            for i in data_val_cells:
-                worksheet.data_validation(i, {'validate':'list', 'source':self.entry_values})
-        writer.save()
-        self.autofit_columns(filepath,sheet_name)
+        try:
+            writer = pd.ExcelWriter(filepath, engine='xlsxwriter', date_format='ddd dd-mm-yyyy', datetime_format='ddd dd-mm-yyyy')
+            self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
+            workbook = writer.book
+            worksheet = writer.sheets[sheet_name]
+            workbook.add_format({'border':1})
+            if data_val_cells:
+                for i in data_val_cells:
+                    worksheet.data_validation(i, {'validate':'list', 'source':self.entry_values})
+            writer.save()
+            self.autofit_columns(filepath,sheet_name)
+            return True
+        except:
+            return False
 
     def autofit_columns(self,filepath,sheet_name):
         """
@@ -86,4 +90,8 @@ class Data_Exports():
             cell_text.append(df.iloc[row])
         ax.table(cellText=cell_text, colLabels=df.columns, loc='center')
         ax.axis('off')
-        fig.savefig(filepath)
+        try:
+            fig.savefig(filepath)
+            return True
+        except:
+            return False

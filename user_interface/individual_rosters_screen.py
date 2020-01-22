@@ -45,8 +45,11 @@ class IndividualRostersScreen(tk.Frame):
         individual_rosters = Individual_Rosters()
         file_import_test = individual_rosters.import_data(final_roster_path)
         if file_import_test:
-            individual_rosters.create_individual_rosters(individual_roster_save_folder)
-            self.controller.show_frame('HomeScreen')
+            export_test = individual_rosters.create_individual_rosters(individual_roster_save_folder)
+            if export_test:
+                self.controller.show_frame('HomeScreen')
+            else:
+                self.controller.show_frame('ErrorScreenExport')
         else:
             self.controller.frames['ErrorScreen'].update_error_messages(final_roster_path,individual_rosters.expected_columns)
             self.controller.show_frame('ErrorScreen')

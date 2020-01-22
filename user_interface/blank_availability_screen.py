@@ -45,8 +45,11 @@ class BlankAvailabilityScreen(tk.Frame):
         if file_import_test:
             save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
             availability_form.get_timetable_dates(timetable)
-            availability_form.create_availability_form(save_location)
-            self.controller.show_frame('HomeScreen')
+            export_test = availability_form.create_availability_form(save_location)
+            if export_test:
+                self.controller.show_frame('HomeScreen')
+            else:
+                self.controller.show_frame('ErrorScreenExport')
         else:
             self.controller.frames['ErrorScreen'].update_error_messages(timetable_path,timetable.expected_columns)
             self.controller.show_frame('ErrorScreen')

@@ -39,4 +39,5 @@ class Blank_Roster(Data_Exports):
         self.data_export = self.timetable.merge(self.crew_requirements, how='left', on='Timetable')
         blank_roster_columns = self.data_export.columns.tolist() + self.blank_columns
         self.data_export = self.data_export.reindex(columns = blank_roster_columns)
-        self.export_data(filepath=save_location, sheet_name=sheet_name)
+        export_test = self.export_data(filepath=save_location, sheet_name=sheet_name)
+        return export_test
