@@ -105,7 +105,7 @@ class Master_Roster(Data_Imports,Data_Exports):
         right_df = self.crew_members_points
         merged_df = pd.merge(left_df,right_df, left_on = 'Name', right_on = 'Name', how = 'left')
         merged_df.sort_values('Points',ascending=True,inplace=True)
-        return merged_df['Name'][0]
+        return merged_df['Name'].iloc[0]
 
     def allocate_person_to_turn(self,person_for_turn,working_date,grade):
         """
@@ -128,7 +128,7 @@ class Master_Roster(Data_Imports,Data_Exports):
         """
         Adds points for person to self.crew_member_points
         """
-        if person in self.crew_members_points['Name']:
+        if person in self.crew_members_points['Name'].values:
             row_index = self.crew_members_points.index[self.crew_members_points['Name']==person][0]
             existing_points = self.crew_members_points['Points'][row_index]
             self.crew_members_points.at[row_index,'Points'] = points_to_add + existing_points

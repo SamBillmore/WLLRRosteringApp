@@ -36,4 +36,4 @@ class ErrorScreen(tk.Frame):
         """
         error_filename = os.path.basename(error_filepath)
         self.error_filepath_label['text'] = error_filename
-        self.error_expected_columns_label['text'] = error_expected_columns
+        self.error_expected_columns_label['text'] = list(error_expected_columns.keys())
