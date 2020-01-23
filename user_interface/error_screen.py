@@ -1,4 +1,4 @@
-import tkinter as tk
+from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import PhotoImage
@@ -6,7 +6,7 @@ import os
 
 from user_interface.resource_path import ResourcePath
 
-class ErrorScreen(tk.Frame,ResourcePath):
+class ErrorScreen(Frame,ResourcePath):
     """
     Screen for showing errors in data import
     """
@@ -15,7 +15,7 @@ class ErrorScreen(tk.Frame,ResourcePath):
         """
         Initialise the error screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
         self.picture_path = './/user_interface//error_screen_pic.png'
@@ -47,7 +47,7 @@ class ErrorScreen(tk.Frame,ResourcePath):
         self.error_filepath_label['text'] = error_filename
         self.error_expected_columns_label['text'] = list(error_expected_columns.keys())
 
-class ErrorScreenExport(tk.Frame,ResourcePath):
+class ErrorScreenExport(Frame,ResourcePath):
     """
     Screen for showing errors in data export
     """
@@ -56,7 +56,7 @@ class ErrorScreenExport(tk.Frame,ResourcePath):
         """
         Initialise the error screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
         self.picture_path = './/user_interface//error_screen_pic.png'

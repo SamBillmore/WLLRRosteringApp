@@ -1,4 +1,5 @@
-import tkinter as tk
+from tkinter import Tk
+from tkinter import Frame
 from tkinter import filedialog
 
 from user_interface.home_screen import HomeScreen
@@ -11,7 +12,7 @@ from user_interface.error_screen import ErrorScreen
 from user_interface.error_screen import ErrorScreenExport
 from user_interface.wait_screen import WaitScreen
 
-class App(tk.Tk):
+class App(Tk):
     """
     Overall container for app
     Individual screens are raised within this container
@@ -21,7 +22,7 @@ class App(tk.Tk):
         """
         Initialise the class
         """
-        tk.Tk.__init__(self)
+        Tk.__init__(self)
 
         self.title('WLLR footplate crew rostering program')
         self.geometry('850x600+250+100')
@@ -32,7 +33,7 @@ class App(tk.Tk):
         self.font = 'courier 11'
 
         # the container holds the stack of frames on top of each other. The one to be visible will be raised above the others
-        container = tk.Frame(self)
+        container = Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)

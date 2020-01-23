@@ -1,14 +1,15 @@
-import tkinter as tk
+from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import Entry
 from tkinter import filedialog
+from time import sleep
 
 from blank_availability.create_blank_availability import Timetable
 from blank_roster.create_blank_roster import Crew_Requirements
 from blank_roster.create_blank_roster import Blank_Roster
 
-class BlankRosterScreen(tk.Frame):
+class BlankRosterScreen(Frame):
     """
     Blank roster screen
     """
@@ -17,7 +18,7 @@ class BlankRosterScreen(tk.Frame):
         """
         Initialise the blank roster screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
 
@@ -54,6 +55,7 @@ class BlankRosterScreen(tk.Frame):
             if crew_reqs_import_test:
                 save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
                 self.controller.show_frame('WaitScreen')
+                sleep(1.5)
                 export_test = blank_roster.create_blank_roster(timetable.data_import,crew_reqs.data_import,save_location)
                 if export_test:
                     self.controller.show_frame('HomeScreen')

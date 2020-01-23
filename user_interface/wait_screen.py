@@ -1,10 +1,10 @@
-import tkinter as tk
+from tkinter import Frame
 from tkinter import Label
 from tkinter import PhotoImage
 
 from user_interface.resource_path import ResourcePath
 
-class WaitScreen(tk.Frame,ResourcePath):
+class WaitScreen(Frame,ResourcePath):
     """
     Screen for showing during export of files
     """
@@ -13,7 +13,7 @@ class WaitScreen(tk.Frame,ResourcePath):
         """
         Initialise the error screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
         self.picture_path = './/user_interface//wait_screen_pic.png'

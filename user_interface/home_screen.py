@@ -1,4 +1,4 @@
-import tkinter as tk
+from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import PhotoImage
@@ -9,7 +9,7 @@ from user_interface.allocate_crews_screen import AllocateCrewsScreen
 from user_interface.individual_rosters_screen import IndividualRostersScreen
 from user_interface.resource_path import ResourcePath
 
-class HomeScreen(tk.Frame,ResourcePath):
+class HomeScreen(Frame,ResourcePath):
     """
     The home screen for the program
     """
@@ -18,7 +18,7 @@ class HomeScreen(tk.Frame,ResourcePath):
         """
         Layout for the home screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
         self.picture_path = './/user_interface//home_screen_pic.png'

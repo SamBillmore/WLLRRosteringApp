@@ -1,11 +1,12 @@
-import tkinter as tk
+from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import Entry
+from time import sleep
 
 from individual_rosters.create_individual_rosters import Individual_Rosters
 
-class IndividualRostersScreen(tk.Frame):
+class IndividualRostersScreen(Frame):
     """
     Individual rosters screen
     """
@@ -14,7 +15,7 @@ class IndividualRostersScreen(tk.Frame):
         """
         Initialise the individual rosters screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
 
@@ -43,6 +44,7 @@ class IndividualRostersScreen(tk.Frame):
         Create individual rosters from the final roster
         """
         self.controller.show_frame('WaitScreen')
+        sleep(1.5)
         individual_rosters = Individual_Rosters()
         file_import_test = individual_rosters.import_data(final_roster_path)
         if file_import_test:

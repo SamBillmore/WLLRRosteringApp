@@ -1,13 +1,14 @@
-import tkinter as tk
+from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import Entry
 from tkinter import filedialog
+from time import sleep
 
 from blank_availability.create_blank_availability import Timetable
 from blank_availability.create_blank_availability import Availability_Form
 
-class BlankAvailabilityScreen(tk.Frame):
+class BlankAvailabilityScreen(Frame):
     """
     Blank availability screen
     """
@@ -16,7 +17,7 @@ class BlankAvailabilityScreen(tk.Frame):
         """
         Initialise the blank availability screen
         """
-        tk.Frame.__init__(self, parent, bg=background_col)
+        Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
 
@@ -44,6 +45,7 @@ class BlankAvailabilityScreen(tk.Frame):
         if file_import_test:
             save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
             self.controller.show_frame('WaitScreen')
+            sleep(1.5)
             availability_form.get_timetable_dates(timetable)
             export_test = availability_form.create_availability_form(save_location)
             if export_test:
