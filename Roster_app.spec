@@ -3,7 +3,9 @@
 block_cipher = None
 
 added_files = [
-    ('user_interface/home_screen_pic.png','user_interface')
+    ('user_interface/home_screen_pic.png','user_interface'),
+    ('user_interface/error_screen_pic.png','user_interface'),
+    ('user_interface/wait_screen_pic.png','user_interface')
 ]
 
 a = Analysis(['Roster_app.py'],
