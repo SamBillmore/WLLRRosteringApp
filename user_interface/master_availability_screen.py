@@ -2,7 +2,6 @@ from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import filedialog
-from time import sleep
 
 class MasterAvailabilityScreen(Frame):
     """
@@ -38,7 +37,6 @@ class MasterAvailabilityScreen(Frame):
         """
         master_avail_save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
         self.controller.show_frame('WaitScreen')
-        sleep(0.5)
         export_test = self.master_availability.export_data(filepath=master_avail_save_location,sheet_name='master_availability')
         if export_test:
             self.controller.show_frame('HomeScreen')
