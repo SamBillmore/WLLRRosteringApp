@@ -25,7 +25,6 @@ class BlankAvailabilityScreen(tk.Frame):
         self.timetable_entry = Entry(self, width=50)
         self.timetable_path = Button (self, text='Browse', width=6, command=lambda: self.controller.browse_file(self.timetable_entry))
         self.create_blank_avail_button = Button (self, text='Create blank availability', width=25, command=lambda: self.create_blank_availability(self.timetable_entry.get()))
-        # self.back_button = Button (self, text='Back', width=19, command=lambda: self.controller.show_frame(self.controller.frame_names_list[0]))
         self.back_button = Button (self, text='Back', width=19, command=lambda: self.controller.show_frame('HomeScreen'))
 
         self.intro_label.grid(row=0, column=0, sticky='W', padx=25, pady=20, columnspan=2)

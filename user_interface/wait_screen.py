@@ -16,9 +16,9 @@ class WaitScreen(tk.Frame,ResourcePath):
         tk.Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
-        self.gif_path = './/user_interface//wait_screen_gif.gif'
+        self.picture_path = './/user_interface//wait_screen_pic.png'
 
-        self.logo = PhotoImage(file=self.resource_path(self.gif_path))
+        self.logo = PhotoImage(file=self.resource_path(self.picture_path))
 
         self.picture = Label (self, image=self.logo)
         self.picture.image = self.logo
