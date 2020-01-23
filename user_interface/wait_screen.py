@@ -24,5 +24,5 @@ class WaitScreen(Frame,ResourcePath):
         self.picture.image = self.logo
         self.polite_label = Label (self, text='Working to generate your file(s)...', bg=background_col, fg=foreground_col, font=font)
 
-        self.polite_label.grid(row=0, column=0, sticky='W', padx=25, pady=20, columnspan=2)
-        self.picture.grid(row=1, column=0, padx = 50, pady = 50, columnspan=2)
+        self.picture.grid(row=0, column=0, padx = 50, pady = 50, columnspan=2)
+        self.polite_label.grid(row=1, column=0, sticky='W', padx=25, pady=20, columnspan=2)
