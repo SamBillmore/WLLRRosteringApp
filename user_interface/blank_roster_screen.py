@@ -53,6 +53,7 @@ class BlankRosterScreen(tk.Frame):
             crew_reqs_import_test = crew_reqs.import_data(crew_reqs_path)
             if crew_reqs_import_test:
                 save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
+                self.controller.show_frame('WaitScreen')
                 export_test = blank_roster.create_blank_roster(timetable.data_import,crew_reqs.data_import,save_location)
                 if export_test:
                     self.controller.show_frame('HomeScreen')

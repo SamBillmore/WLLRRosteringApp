@@ -16,7 +16,7 @@ class ErrorScreen(tk.Frame):
         self.controller = controller
         self.parent = parent
 
-        self.intro_label = Label (self, text='There has been an error with one of the files imported', bg=background_col, fg=foreground_col, font=font)
+        self.intro_label = Label (self, text='There has been an error with one of the files imported.', bg=background_col, fg=foreground_col, font=font)
         self.filepath_label = Label (self, text='The file with errors is: ', bg=background_col, fg=foreground_col, font=font)
         self.expected_columns_label = Label (self, text='The expected columns are: ', bg=background_col, fg=foreground_col, font=font)
         self.error_filepath_label = Label (self, text='', bg=background_col, fg=foreground_col, font=font)
@@ -51,8 +51,8 @@ class ErrorScreenExport(tk.Frame):
         self.controller = controller
         self.parent = parent
 
-        self.intro_label = Label (self, text='There has been an error with the creation of your file', bg=background_col, fg=foreground_col, font=font)
-        self.error_message_label = Label (self, text='Please ensure you do not have the file open, then try again', bg=background_col, fg=foreground_col, font=font)
+        self.intro_label = Label (self, text='There has been an error with the creation of your file.', bg=background_col, fg=foreground_col, font=font)
+        self.error_message_label = Label (self, text='Please ensure you do not have the file open, then try again.', bg=background_col, fg=foreground_col, font=font)
         self.back_button = Button (self, text='Back', width=19, command=lambda: self.controller.show_frame('HomeScreen'))
 
         self.intro_label.grid(row=0, column=0, sticky='W', padx=25, pady=20, columnspan=2)

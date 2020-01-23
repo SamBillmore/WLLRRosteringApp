@@ -9,6 +9,7 @@ from user_interface.individual_rosters_screen import IndividualRostersScreen
 from user_interface.master_availability_screen import MasterAvailabilityScreen
 from user_interface.error_screen import ErrorScreen
 from user_interface.error_screen import ErrorScreenExport
+from user_interface.wait_screen import WaitScreen
 
 class App(tk.Tk):
     """
@@ -24,7 +25,7 @@ class App(tk.Tk):
 
         self.title('WLLR footplate crew rostering program')
         self.geometry('850x600+250+100')
-        self.frame_names_list = (HomeScreen,BlankAvailabilityScreen,BlankRosterScreen,AllocateCrewsScreen,MasterAvailabilityScreen,IndividualRostersScreen,ErrorScreen,ErrorScreenExport)
+        self.frame_names_list = (HomeScreen,BlankAvailabilityScreen,BlankRosterScreen,AllocateCrewsScreen,MasterAvailabilityScreen,IndividualRostersScreen,ErrorScreen,ErrorScreenExport,WaitScreen)
         self.frames = {}
         self.background_col = 'black'
         self.foreground_col = 'white'
@@ -50,6 +51,7 @@ class App(tk.Tk):
         """
         frame = self.frames[page_name]
         frame.tkraise()
+        self.update()
 
     def browse_file(self, entry):
         """

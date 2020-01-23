@@ -42,6 +42,7 @@ class IndividualRostersScreen(tk.Frame):
         """
         Create individual rosters from the final roster
         """
+        self.controller.show_frame('WaitScreen')
         individual_rosters = Individual_Rosters()
         file_import_test = individual_rosters.import_data(final_roster_path)
         if file_import_test:

@@ -44,6 +44,7 @@ class BlankAvailabilityScreen(tk.Frame):
         file_import_test = timetable.import_data(timetable_path)
         if file_import_test:
             save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
+            self.controller.show_frame('WaitScreen')
             availability_form.get_timetable_dates(timetable)
             export_test = availability_form.create_availability_form(save_location)
             if export_test:

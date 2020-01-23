@@ -70,6 +70,7 @@ class AllocateCrewsScreen(tk.Frame):
             availability_import_test,file_name,expected_columns = master_roster.create_master_roster(availability_folders,master_availability)
             if availability_import_test:
                 master_roster_save_location = filedialog.asksaveasfilename(title='Choose a save location',defaultextension='.xlsx')
+                self.controller.show_frame('WaitScreen')
                 export_test = master_roster.export_data(filepath=master_roster_save_location,sheet_name='master_roster')
                 if export_test:
                     self.controller.frames['MasterAvailabilityScreen'].update_master_availability(master_availability)
