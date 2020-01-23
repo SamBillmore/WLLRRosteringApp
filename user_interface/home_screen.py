@@ -2,15 +2,14 @@ import tkinter as tk
 from tkinter import Button
 from tkinter import Label
 from tkinter import PhotoImage
-import os
-import sys
 
 from user_interface.blank_availability_screen import BlankAvailabilityScreen
 from user_interface.blank_roster_screen import BlankRosterScreen
 from user_interface.allocate_crews_screen import AllocateCrewsScreen
 from user_interface.individual_rosters_screen import IndividualRostersScreen
+from user_interface.resource_path import ResourcePath
 
-class HomeScreen(tk.Frame):
+class HomeScreen(tk.Frame,ResourcePath):
     """
     The home screen for the program
     """
@@ -60,13 +59,3 @@ class HomeScreen(tk.Frame):
         self.step_3_button.grid(row=6,column=1,sticky='W')
         self.step_5_button.grid(row=8,column=1,sticky='W')
         self.step_7_button.grid(row=10,column=1,sticky='W')
-
-    def resource_path(self, relative_path):
-        """
-        Create full filepath to picture
-        """
-        if hasattr(sys, '_MEIPASS'):
-            return os.path.join(sys._MEIPASS, relative_path)
-        else:
-            base_path = os.path.abspath(".")
-            return os.path.join(base_path, relative_path)
