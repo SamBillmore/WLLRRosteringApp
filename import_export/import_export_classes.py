@@ -29,7 +29,7 @@ class Data_Imports():
             except:
                 self.data_import = pd.read_excel(file_path,dtype=self.expected_columns)
             if 'Date' in self.data_import.columns:
-                self.data_import['Date'] = pd.to_datetime(self.data_import['Date'])
+                self.data_import['Date'] = pd.to_datetime(self.data_import['Date'],dayfirst=True,infer_datetime_format=True)
             return np.array_equal(self.data_import.columns, list(self.expected_columns.keys()))
         except:
             return False
