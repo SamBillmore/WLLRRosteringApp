@@ -74,5 +74,5 @@ class Master_Availability(Data_Exports):
         availability = crew_member.data_import
         availability.insert(1,'Name',[crew_member.name for i in range(len(availability))])
         availability.insert(1,'Grade',[crew_member.grade for i in range(len(availability))])
-        self.data_export = self.data_export.append(availability)
+        self.data_export = pd.concat([self.data_export, availability])
         self.data_export = self.data_export[self.data_export['Available'] == 'Y']

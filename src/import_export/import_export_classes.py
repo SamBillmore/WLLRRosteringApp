@@ -61,7 +61,7 @@ class Data_Exports():
             if data_val_cells:
                 for i in data_val_cells:
                     worksheet.data_validation(i, {'validate':'list', 'source':self.entry_values})
-            writer.save()
+            writer.close()
             self.autofit_columns(filepath,sheet_name)
             return True
         except:
