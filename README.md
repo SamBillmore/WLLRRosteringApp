@@ -25,7 +25,7 @@ The app can be run directly from the terminal or it can be packaged into a .exe 
 
 To run the app from the terminal, navigate to the directory you have saved the files and run: `python src/rostering_app.py`
 
-To package the code into a .exe using pyinstaller (https://www.pyinstaller.org/) first pip install pyinstaller. Then run: `pyinstaller -w -F -i Roster_app_icon.ico Roster_app.spec Roster_app.py`. Note: this may currently be broken due to refactoring.
+To package the code into a .exe using pyinstaller (https://www.pyinstaller.org/) first run `pip install pyinstaller`, then run: `pyinstaller rostering_app.spec`.
 
 NB: the code has only been used and tested on the Windows 10 operating system.
 
