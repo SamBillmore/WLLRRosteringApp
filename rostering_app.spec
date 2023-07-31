@@ -8,7 +8,7 @@ added_files = [
     ('src/user_interface/wait_screen_pic.png','src/user_interface')
 ]
 
-a = Analysis(['src\\rostering_app.py'],
+a = Analysis(['src/rostering_app.py'],
              pathex=[],
              binaries=[],
              datas=added_files,
