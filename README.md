@@ -23,9 +23,9 @@ The outputs are created as .xlsx files with the exception of the individual rost
 
 The app can be run directly from the terminal or it can be packaged into a .exe and run independently (which is how it is currently being used by the roster clerk).
 
-To run the app from the terminal, navigate to the directory you have saved the files and run: `python src/rostering_app.py`
+To run the app from the terminal, navigate to the directory you have saved the files, install the module and the requirements (by running `pip install .`) then run: `WLLRRosteringApp`.
 
-To package the code into a .exe using pyinstaller (https://www.pyinstaller.org/) first run `pip install pyinstaller`, then run: `pyinstaller rostering_app.spec`.
+To package the code into a .exe using pyinstaller (https://www.pyinstaller.org/) first run `pip install .["build"]`, then run: `pyinstaller rostering_app.spec`.
 
 NB: the code has only been used and tested on the Windows 10 operating system.
 
