@@ -4,6 +4,29 @@ from import_export.import_export_classes import Data_Imports
 from import_export.import_export_classes import Data_Exports
 
 from master_roster.create_master_availability import Crew_Members
+from master_roster.create_master_availability import Master_Availability
+
+
+def create_master_roster(
+    working_roster_path,
+    driver_availability_folder,
+    fireman_availability_folder,
+    trainee_availability_folder,
+    master_roster_save_location,
+):
+    availability_folders = {
+        "Driver": driver_availability_folder,
+        "Fireman": fireman_availability_folder,
+        "Trainee": trainee_availability_folder,
+    }
+    master_roster = Master_Roster()
+    master_availability = Master_Availability()
+    master_roster.import_data(working_roster_path)
+    master_roster.create_master_roster(availability_folders, master_availability)
+    master_roster.export_data(
+        filepath=master_roster_save_location, sheet_name="master_roster"
+    )
+    return master_availability
 
 
 class Master_Roster(Data_Imports, Data_Exports):
@@ -27,37 +50,25 @@ class Master_Roster(Data_Imports, Data_Exports):
         }
 
     def create_master_roster(self, availability_folders, master_availability):
-        """Controlling function for creating master roster Returns file_import_test,
-        filename (if file failed) and expected columns."""
+        """Controlling function for creating master roster."""
         self.data_export = self.data_import
-        file_import_test, file_name, expected_columns = self.collate_input_data(
-            availability_folders, master_availability
-        )
-        if not file_import_test:
-            return file_import_test, file_name, expected_columns
+        self.collate_input_data(availability_folders, master_availability)
         for key in availability_folders.keys():
             self.allocate_crew_members_to_turns(key)
         self.data_export.pop("Points")
-        return file_import_test, file_name, expected_columns
 
     def collate_input_data(self, availability_folders, master_availability):
-        """Creates master availability from imports (including checking imports) Creates
-        the zeroed points tally Save master availability to Excel Returns
-        file_import_test, filename (if file failed) and expected columns."""
+        """Creates master availability from imports (including checking imports).
+
+        Creates the zeroed points tally. Save master availability to Excel.
+        """
         crew_members = Crew_Members()
         for key, value in availability_folders.items():
-            (
-                file_import_test,
-                file_name,
-                expected_columns,
-            ) = master_availability.create_master_availability(key, value, crew_members)
-            if not file_import_test:
-                return file_import_test, file_name, expected_columns
+            master_availability.create_master_availability(key, value, crew_members)
         master_availability.data_export.sort_values(by=["Grade", "Date"], inplace=True)
         crew_members.create_points_tally()
         self.master_availability = master_availability.data_export
         self.crew_members_points = crew_members.points_tally
-        return file_import_test, file_name, expected_columns
 
     def allocate_crew_members_to_turns(self, grade):
         """

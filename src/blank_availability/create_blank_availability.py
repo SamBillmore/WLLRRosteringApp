@@ -4,6 +4,14 @@ from import_export.import_export_classes import Data_Imports
 from import_export.import_export_classes import Data_Exports
 
 
+def create_blank_availability(timetable_path, save_location):
+    timetable = Timetable()
+    availability_form = Availability_Form()
+    timetable.import_data(timetable_path)
+    availability_form.get_timetable_dates(timetable)
+    availability_form.create_availability_form(save_location)
+
+
 class Timetable(Data_Imports):
     """Timetables as input by the user."""
 
@@ -33,7 +41,6 @@ class Availability_Form(Data_Exports):
         sheet_name = "Availability"
         self.data_export = pd.DataFrame(self.dates, columns=self.columns)
         data_val_cells = ["B" + str(i + 2) for i in self.data_export.index]
-        export_test = self.export_data(
+        self.export_data(
             filepath=save_location, sheet_name=sheet_name, data_val_cells=data_val_cells
         )
-        return export_test

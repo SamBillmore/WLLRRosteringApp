@@ -48,10 +48,13 @@ class MasterAvailabilityScreen(Frame):
             title="Choose a save location", defaultextension=".xlsx"
         )
         self.controller.show_frame("WaitScreen")
-        export_test = self.master_availability.export_data(
-            filepath=master_avail_save_location, sheet_name="master_availability"
-        )
-        if export_test:
+        try:
+            self.master_availability.export_data(
+                filepath=master_avail_save_location, sheet_name="master_availability"
+            )
             self.controller.show_frame("HomeScreen")
-        else:
-            self.controller.show_frame("ErrorScreenExport")
+        except Exception as e:
+            self.controller.frames["ErrorScreen"].display_error_message(
+                f"There has been an error: {e}"
+            )
+            self.controller.show_frame("ErrorScreen")

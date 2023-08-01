@@ -9,7 +9,6 @@ from user_interface.allocate_crews_screen import AllocateCrewsScreen
 from user_interface.individual_rosters_screen import IndividualRostersScreen
 from user_interface.master_availability_screen import MasterAvailabilityScreen
 from user_interface.error_screen import ErrorScreen
-from user_interface.error_screen import ErrorScreenExport
 from user_interface.wait_screen import WaitScreen
 
 
@@ -30,7 +29,6 @@ class App(Tk):
             MasterAvailabilityScreen,
             IndividualRostersScreen,
             ErrorScreen,
-            ErrorScreenExport,
             WaitScreen,
         )
         self.frames = {}

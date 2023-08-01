@@ -4,8 +4,7 @@ from tkinter import Label
 from tkinter import Entry
 from tkinter import filedialog
 
-from blank_availability.create_blank_availability import Timetable
-from blank_availability.create_blank_availability import Availability_Form
+from blank_availability.create_blank_availability import create_blank_availability
 
 
 class BlankAvailabilityScreen(Frame):
@@ -42,7 +41,9 @@ class BlankAvailabilityScreen(Frame):
             self,
             text="Create blank availability",
             width=25,
-            command=lambda: self.create_blank_availability(self.timetable_entry.get()),
+            command=lambda: self.run_create_blank_availability(
+                self.timetable_entry.get()
+            ),
         )
         self.back_button = Button(
             self,
@@ -62,24 +63,17 @@ class BlankAvailabilityScreen(Frame):
         )
         self.back_button.grid(row=3, column=0, sticky="W", padx=25, pady=20)
 
-    def create_blank_availability(self, timetable_path):
+    def run_create_blank_availability(self, timetable_path):
         """Creating blank availability forms."""
-        timetable = Timetable()
-        availability_form = Availability_Form()
-        file_import_test = timetable.import_data(timetable_path)
-        if file_import_test:
-            save_location = filedialog.asksaveasfilename(
-                title="Choose a save location", defaultextension=".xlsx"
-            )
-            self.controller.show_frame("WaitScreen")
-            availability_form.get_timetable_dates(timetable)
-            export_test = availability_form.create_availability_form(save_location)
-            if export_test:
-                self.controller.show_frame("HomeScreen")
-            else:
-                self.controller.show_frame("ErrorScreenExport")
-        else:
-            self.controller.frames["ErrorScreen"].update_error_messages(
-                timetable_path, timetable.expected_columns
+        save_location = filedialog.asksaveasfilename(
+            title="Choose a save location", defaultextension=".xlsx"
+        )
+        self.controller.show_frame("WaitScreen")
+        try:
+            create_blank_availability(timetable_path, save_location)
+            self.controller.show_frame("HomeScreen")
+        except Exception as e:
+            self.controller.frames["ErrorScreen"].display_error_message(
+                f"There has been an error: {e}"
             )
             self.controller.show_frame("ErrorScreen")

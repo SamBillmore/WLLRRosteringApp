@@ -3,7 +3,7 @@ from tkinter import Button
 from tkinter import Label
 from tkinter import Entry
 
-from individual_rosters.create_individual_rosters import Individual_Rosters
+from individual_rosters.create_individual_rosters import create_individual_rosters
 
 
 class IndividualRostersScreen(Frame):
@@ -54,7 +54,7 @@ class IndividualRostersScreen(Frame):
             self,
             text="Create individual rosters",
             width=25,
-            command=lambda: self.individual_rosters(
+            command=lambda: self.run_create_individual_rosters(
                 self.fin_roster_entry.get(), self.save_folder_entry.get()
             ),
         )
@@ -79,21 +79,15 @@ class IndividualRostersScreen(Frame):
         )
         self.back_button.grid(row=4, column=0, sticky="W", padx=25, pady=20)
 
-    def individual_rosters(self, final_roster_path, individual_roster_save_folder):
-        """Create individual rosters from the final roster."""
+    def run_create_individual_rosters(
+        self, final_roster_path, individual_roster_save_folder
+    ):
         self.controller.show_frame("WaitScreen")
-        individual_rosters = Individual_Rosters()
-        file_import_test = individual_rosters.import_data(final_roster_path)
-        if file_import_test:
-            export_test = individual_rosters.create_individual_rosters(
-                individual_roster_save_folder
-            )
-            if export_test:
-                self.controller.show_frame("HomeScreen")
-            else:
-                self.controller.show_frame("ErrorScreenExport")
-        else:
-            self.controller.frames["ErrorScreen"].update_error_messages(
-                final_roster_path, individual_rosters.expected_columns
+        try:
+            create_individual_rosters(final_roster_path, individual_roster_save_folder)
+            self.controller.show_frame("HomeScreen")
+        except Exception as e:
+            self.controller.frames["ErrorScreen"].display_error_message(
+                f"There has been an error: {e}"
             )
             self.controller.show_frame("ErrorScreen")

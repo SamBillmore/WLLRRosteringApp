@@ -1,5 +1,18 @@
 from import_export.import_export_classes import Data_Imports
 from import_export.import_export_classes import Data_Exports
+from blank_availability.create_blank_availability import Timetable
+
+
+def create_blank_roster(timetable_path, crew_reqs_path, save_location):
+    """Creating blank roster."""
+    timetable = Timetable()
+    crew_reqs = Crew_Requirements()
+    blank_roster = Blank_Roster()
+    timetable.import_data(timetable_path)
+    crew_reqs.import_data(crew_reqs_path)
+    blank_roster.create_blank_roster(
+        timetable.data_import, crew_reqs.data_import, save_location
+    )
 
 
 class Crew_Requirements(Data_Imports):
@@ -31,5 +44,4 @@ class Blank_Roster(Data_Exports):
         )
         blank_roster_columns = self.data_export.columns.tolist() + self.blank_columns
         self.data_export = self.data_export.reindex(columns=blank_roster_columns)
-        export_test = self.export_data(filepath=save_location, sheet_name=sheet_name)
-        return export_test
+        self.export_data(filepath=save_location, sheet_name=sheet_name)
