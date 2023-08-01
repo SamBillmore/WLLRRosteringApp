@@ -44,5 +44,4 @@ class Blank_Roster(Data_Exports):
         )
         blank_roster_columns = self.data_export.columns.tolist() + self.blank_columns
         self.data_export = self.data_export.reindex(columns=blank_roster_columns)
-        export_test = self.export_data(filepath=save_location, sheet_name=sheet_name)
-        return export_test
+        self.export_data(filepath=save_location, sheet_name=sheet_name)

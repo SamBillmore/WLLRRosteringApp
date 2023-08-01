@@ -41,7 +41,6 @@ class Availability_Form(Data_Exports):
         sheet_name = "Availability"
         self.data_export = pd.DataFrame(self.dates, columns=self.columns)
         data_val_cells = ["B" + str(i + 2) for i in self.data_export.index]
-        export_test = self.export_data(
+        self.export_data(
             filepath=save_location, sheet_name=sheet_name, data_val_cells=data_val_cells
         )
-        return export_test

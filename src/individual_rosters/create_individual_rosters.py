@@ -55,10 +55,7 @@ class Individual_Rosters(Data_Imports, Data_Exports):
                 indiv_save_path = os.path.join(
                     save_location, r"Individual roster_" + indiv + ".pdf"
                 )
-                export_test = self.print_df_to_pdf(indiv_roster_df, indiv_save_path)
-                if not export_test:
-                    return export_test
-        return export_test
+                self.print_df_to_pdf(indiv_roster_df, indiv_save_path)
 
     def change_date_format(self, df, date_column):
         """

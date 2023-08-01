@@ -50,8 +50,7 @@ class Master_Roster(Data_Imports, Data_Exports):
         }
 
     def create_master_roster(self, availability_folders, master_availability):
-        """Controlling function for creating master roster Returns file_import_test,
-        filename (if file failed) and expected columns."""
+        """Controlling function for creating master roster."""
         self.data_export = self.data_import
         self.collate_input_data(availability_folders, master_availability)
         for key in availability_folders.keys():
@@ -59,9 +58,10 @@ class Master_Roster(Data_Imports, Data_Exports):
         self.data_export.pop("Points")
 
     def collate_input_data(self, availability_folders, master_availability):
-        """Creates master availability from imports (including checking imports) Creates
-        the zeroed points tally Save master availability to Excel Returns
-        file_import_test, filename (if file failed) and expected columns."""
+        """Creates master availability from imports (including checking imports).
+
+        Creates the zeroed points tally. Save master availability to Excel.
+        """
         crew_members = Crew_Members()
         for key, value in availability_folders.items():
             master_availability.create_master_availability(key, value, crew_members)

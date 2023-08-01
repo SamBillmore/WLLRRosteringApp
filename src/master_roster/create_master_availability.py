@@ -42,10 +42,11 @@ class Master_Availability(Data_Exports):
         self.data_export = pd.DataFrame()
 
     def create_master_availability(self, grade, availability_folder, crew_members):
-        """Importing availability from completed availability forms Creates individual
-        crew member objects and adds to crew_members list Creates master availability
-        form Returns file_import_test, filename (if file failed) and expected
-        columns."""
+        """Importing availability from completed availability forms.
+
+        Creates individual crew member objects and adds to crew_members list. Creates
+        master availability form.
+        """
         for file_name in os.listdir(availability_folder):
             crew_member = Crew_Member()
             crew_member.name = file_name.split(".")[0]

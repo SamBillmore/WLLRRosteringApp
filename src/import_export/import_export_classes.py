@@ -15,22 +15,33 @@ class Data_Imports:
 
     def import_data(self, file_path):
         """Attempts to import data from a csv or xlsx and checks whether columns are as
-        expected Returns True if import completes and column headers are correct Returns
-        False otherwise."""
-        try:
-            try:
-                self.data_import = pd.read_csv(file_path, dtype=self.expected_columns)
-            except Exception:
-                self.data_import = pd.read_excel(file_path, dtype=self.expected_columns)
-            if "Date" in self.data_import.columns:
-                self.data_import["Date"] = pd.to_datetime(
-                    self.data_import["Date"], dayfirst=True, infer_datetime_format=True
-                )
-            return np.array_equal(
-                self.data_import.columns, list(self.expected_columns.keys())
+        expected."""
+        _, file_extension = os.path.splitext(file_path)
+        if file_extension == ".csv":
+            self.data_import = pd.read_csv(file_path, dtype=self.expected_columns)
+        elif file_extension in [
+            ".xls",
+            ".xlsx",
+            ".xlsm",
+            ".xlsb",
+            ".odf",
+            ".ods",
+            ".odt",
+        ]:
+            self.data_import = pd.read_excel(file_path, dtype=self.expected_columns)
+        else:
+            raise ValueError(
+                f"The file {file_path} is not of the correct type. \n"
+                "It should be either .csv or .xlsx"
             )
-        except Exception:
-            return False
+
+        if "Date" in self.data_import.columns:
+            self.data_import["Date"] = pd.to_datetime(
+                self.data_import["Date"], dayfirst=True, infer_datetime_format=True
+            )
+        return np.array_equal(
+            self.data_import.columns, list(self.expected_columns.keys())
+        )
 
 
 class Data_Exports:
@@ -42,29 +53,28 @@ class Data_Exports:
         self.entry_values = ["Y", "N"]
 
     def export_data(self, filepath, sheet_name, data_val_cells=None):
-        """Attempts to export data to a .xlsx Includes formatting of columns and header
-        Adds data validation to cells specified in data_val_cells."""
-        try:
-            writer = pd.ExcelWriter(
-                filepath,
-                engine="xlsxwriter",
-                date_format="ddd dd-mm-yyyy",
-                datetime_format="ddd dd-mm-yyyy",
-            )
-            self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
-            workbook = writer.book
-            worksheet = writer.sheets[sheet_name]
-            workbook.add_format({"border": 1})
-            if data_val_cells:
-                for i in data_val_cells:
-                    worksheet.data_validation(
-                        i, {"validate": "list", "source": self.entry_values}
-                    )
-            writer.close()
-            self.autofit_columns(filepath, sheet_name)
-            return True
-        except Exception:
-            return False
+        """Exports data to a .xlsx.
+
+        Includes formatting of columns and header. Adds data validation to cells
+        specified in data_val_cells.
+        """
+        writer = pd.ExcelWriter(
+            filepath,
+            engine="xlsxwriter",
+            date_format="ddd dd-mm-yyyy",
+            datetime_format="ddd dd-mm-yyyy",
+        )
+        self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
+        workbook = writer.book
+        worksheet = writer.sheets[sheet_name]
+        workbook.add_format({"border": 1})
+        if data_val_cells:
+            for i in data_val_cells:
+                worksheet.data_validation(
+                    i, {"validate": "list", "source": self.entry_values}
+                )
+        writer.close()
+        self.autofit_columns(filepath, sheet_name)
 
     def autofit_columns(self, filepath, sheet_name):
         """Auto adjusts the width of columns in a specific worksheet of an Excel
@@ -86,10 +96,15 @@ class Data_Exports:
             cell_text.append(df.iloc[row])
         ax.table(cellText=cell_text, colLabels=df.columns, loc="center")
         ax.axis("off")
+        err = None
         try:
             fig.savefig(filepath)
-            return True
-        except Exception:
-            return False
+        except Exception as e:
+            err = e
         finally:
             plt.close()
+            if err is not None:
+                raise Exception(
+                    f"An exception of type {type(err).__name__} occurred. \n"
+                    f"Arguments:\n {err.args}"
+                )
