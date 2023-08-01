@@ -160,12 +160,12 @@ class AllocateCrewsScreen(Frame):
                 else:
                     self.controller.show_frame("ErrorScreenExport")
             else:
-                self.controller.frames["ErrorScreen"].update_error_messages(
+                self.controller.frames["ErrorScreen"].display_error_message(
                     file_name, expected_columns
                 )
                 self.controller.show_frame("ErrorScreen")
         else:
-            self.controller.frames["ErrorScreen"].update_error_messages(
+            self.controller.frames["ErrorScreen"].display_error_message(
                 working_roster_path, master_roster.expected_columns
             )
             self.controller.show_frame("ErrorScreen")

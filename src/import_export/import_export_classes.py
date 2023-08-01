@@ -91,3 +91,5 @@ class Data_Exports:
             return True
         except Exception:
             return False
+        finally:
+            plt.close()
