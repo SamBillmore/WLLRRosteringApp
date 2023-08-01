@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import os
 from win32com.client import Dispatch
@@ -39,9 +38,6 @@ class Data_Imports:
             self.data_import["Date"] = pd.to_datetime(
                 self.data_import["Date"], dayfirst=True, infer_datetime_format=True
             )
-        return np.array_equal(
-            self.data_import.columns, list(self.expected_columns.keys())
-        )
 
 
 class Data_Exports:
