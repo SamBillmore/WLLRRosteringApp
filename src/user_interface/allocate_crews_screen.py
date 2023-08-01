@@ -4,8 +4,7 @@ from tkinter import Label
 from tkinter import Entry
 from tkinter import filedialog
 
-from master_roster.create_master_roster import Master_Roster
-from master_roster.create_master_availability import Master_Availability
+from master_roster.create_master_roster import create_master_roster
 
 
 class AllocateCrewsScreen(Frame):
@@ -84,7 +83,7 @@ class AllocateCrewsScreen(Frame):
             self,
             text="Allocate crews to roster",
             width=24,
-            command=lambda: self.master_roster(
+            command=lambda: self.run_create_master_roster(
                 self.blank_roster_entry.get(),
                 self.driver_avail_entry.get(),
                 self.fireman_avail_entry.get(),
@@ -116,7 +115,7 @@ class AllocateCrewsScreen(Frame):
         self.create_timetable_button.grid(row=5, column=1, sticky="E", padx=0, pady=15)
         self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
 
-    def master_roster(
+    def run_create_master_roster(
         self,
         working_roster_path,
         driver_availability_folder,
@@ -128,44 +127,24 @@ class AllocateCrewsScreen(Frame):
         - creating master availability
         - create master roster by allocating availability to turns
         """
-        availability_folders = {
-            "Driver": driver_availability_folder,
-            "Fireman": fireman_availability_folder,
-            "Trainee": trainee_availability_folder,
-        }
-        master_roster = Master_Roster()
-        master_availability = Master_Availability()
-        working_roster_import_test = master_roster.import_data(working_roster_path)
-        if working_roster_import_test:
-            (
-                availability_import_test,
-                file_name,
-                expected_columns,
-            ) = master_roster.create_master_roster(
-                availability_folders, master_availability
+        master_roster_save_location = filedialog.asksaveasfilename(
+            title="Choose a save location", defaultextension=".xlsx"
+        )
+        self.controller.show_frame("WaitScreen")
+        try:
+            master_availability = create_master_roster(
+                working_roster_path,
+                driver_availability_folder,
+                fireman_availability_folder,
+                trainee_availability_folder,
+                master_roster_save_location,
             )
-            if availability_import_test:
-                master_roster_save_location = filedialog.asksaveasfilename(
-                    title="Choose a save location", defaultextension=".xlsx"
-                )
-                self.controller.show_frame("WaitScreen")
-                export_test = master_roster.export_data(
-                    filepath=master_roster_save_location, sheet_name="master_roster"
-                )
-                if export_test:
-                    self.controller.frames[
-                        "MasterAvailabilityScreen"
-                    ].update_master_availability(master_availability)
-                    self.controller.show_frame("MasterAvailabilityScreen")
-                else:
-                    self.controller.show_frame("ErrorScreenExport")
-            else:
-                self.controller.frames["ErrorScreen"].display_error_message(
-                    file_name, expected_columns
-                )
-                self.controller.show_frame("ErrorScreen")
-        else:
+            self.controller.frames[
+                "MasterAvailabilityScreen"
+            ].update_master_availability(master_availability)
+            self.controller.show_frame("MasterAvailabilityScreen")
+        except Exception as e:
             self.controller.frames["ErrorScreen"].display_error_message(
-                working_roster_path, master_roster.expected_columns
+                f"There has been an error: {e}"
             )
             self.controller.show_frame("ErrorScreen")

@@ -51,12 +51,9 @@ class Master_Availability(Data_Exports):
             crew_member.name = file_name.split(".")[0]
             crew_member.grade = grade
             file_path = os.path.join(availability_folder + "/" + file_name)
-            file_import_test = crew_member.import_data(file_path)
-            if not file_import_test:
-                return file_import_test, file_path, crew_member.expected_columns
+            crew_member.import_data(file_path)
             self.append_availability(crew_member)
             crew_members.data.append(crew_member)
-        return file_import_test, None, crew_member.expected_columns
 
     def append_availability(self, crew_member):
         """Appends an individual's availability to the master list."""
