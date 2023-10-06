@@ -1,6 +1,7 @@
 import pandas as pd
 import os
-from win32com.client import Dispatch
+import platform
+import xlwings as xw
 import matplotlib.pyplot as plt
 
 
@@ -75,13 +76,12 @@ class Data_Exports:
     def autofit_columns(self, filepath, sheet_name):
         """Auto adjusts the width of columns in a specific worksheet of an Excel
         workbook."""
-        excel = Dispatch("Excel.Application")
-        full_filepath = os.path.abspath(filepath)
-        wb = excel.Workbooks.Open(full_filepath)
-        excel.Worksheets(sheet_name).Activate()
-        excel.ActiveSheet.Columns.AutoFit()
-        wb.Save()
-        wb.Close()
+        if platform.system() == "Windows":
+            with xw.App(visible=False) as app:
+                wb = xw.Book(filepath)
+                wb.sheets[sheet_name].autofit(axis="columns")
+                wb.save(filepath)
+                wb.close()
 
     def print_df_to_pdf(self, df, filepath):
         """Saves a pandas dataframe to a pdf using matplotlib."""
