@@ -77,10 +77,10 @@ class Data_Exports:
         """Auto adjusts the width of columns in a specific worksheet of an Excel
         workbook."""
         if platform.system() == "Windows":
-            with xw.App(visible=False) as app:
+            with xw.App(visible=False):
                 wb = xw.Book(filepath)
                 wb.sheets[sheet_name].autofit(axis="columns")
-                wb.save(filepath)
+                wb.save()
                 wb.close()
 
     def print_df_to_pdf(self, df, filepath):
