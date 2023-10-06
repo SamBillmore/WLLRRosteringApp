@@ -14,7 +14,7 @@ class ErrorScreen(Frame, ResourcePath):
         Frame.__init__(self, parent, bg=background_col)
         self.controller = controller
         self.parent = parent
-        self.picture_path = ".//src//user_interface//error_screen_pic.png"
+        self.picture_path = "src/user_interface/error_screen_pic.png"
         self.logo = PhotoImage(file=self.resource_path(self.picture_path))
         self.picture = Label(self, image=self.logo)
         self.picture.image = self.logo
