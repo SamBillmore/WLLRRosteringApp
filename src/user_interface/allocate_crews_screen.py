@@ -5,6 +5,7 @@ from tkinter import Entry
 from tkinter import filedialog
 
 from master_roster.create_master_roster import create_master_roster
+from error_handling.error_handling_decorator import handle_errors
 
 
 class AllocateCrewsScreen(Frame):
@@ -115,6 +116,7 @@ class AllocateCrewsScreen(Frame):
         self.create_timetable_button.grid(row=5, column=1, sticky="E", padx=0, pady=15)
         self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
 
+    @handle_errors
     def run_create_master_roster(
         self,
         working_roster_path,
@@ -131,20 +133,14 @@ class AllocateCrewsScreen(Frame):
             title="Choose a save location", defaultextension=".xlsx"
         )
         self.controller.show_frame("WaitScreen")
-        try:
-            master_availability = create_master_roster(
-                working_roster_path,
-                driver_availability_folder,
-                fireman_availability_folder,
-                trainee_availability_folder,
-                master_roster_save_location,
-            )
-            self.controller.frames[
-                "MasterAvailabilityScreen"
-            ].update_master_availability(master_availability)
-            self.controller.show_frame("MasterAvailabilityScreen")
-        except Exception as e:
-            self.controller.frames["ErrorScreen"].display_error_message(
-                f"There has been an error: {e}"
-            )
-            self.controller.show_frame("ErrorScreen")
+        master_availability = create_master_roster(
+            working_roster_path,
+            driver_availability_folder,
+            fireman_availability_folder,
+            trainee_availability_folder,
+            master_roster_save_location,
+        )
+        self.controller.frames["MasterAvailabilityScreen"].update_master_availability(
+            master_availability
+        )
+        self.controller.show_frame("MasterAvailabilityScreen")

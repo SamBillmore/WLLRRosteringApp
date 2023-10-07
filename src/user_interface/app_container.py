@@ -32,6 +32,7 @@ class App(Tk):
             WaitScreen,
         )
         self.frames = {}
+        self.visible_frame = None
         self.background_col = "black"
         self.foreground_col = "white"
         self.font = "courier 11"
@@ -62,6 +63,7 @@ class App(Tk):
         frame = self.frames[page_name]
         frame.tkraise()
         self.update()
+        self.visible_frame = page_name
 
     def browse_file(self, entry):
         """Browse the file system."""

@@ -5,6 +5,7 @@ from tkinter import Entry
 from tkinter import filedialog
 
 from blank_roster.create_blank_roster import create_blank_roster
+from error_handling.error_handling_decorator import handle_errors
 
 
 class BlankRosterScreen(Frame):
@@ -78,16 +79,11 @@ class BlankRosterScreen(Frame):
         self.create_timetable_button.grid(row=3, column=1, sticky="E", padx=0, pady=15)
         self.back_button.grid(row=4, column=0, sticky="W", padx=25, pady=20)
 
+    @handle_errors
     def run_create_blank_roster(self, timetable_path, crew_reqs_path):
         save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
         self.controller.show_frame("WaitScreen")
-        try:
-            create_blank_roster(timetable_path, crew_reqs_path, save_location)
-            self.controller.show_frame("HomeScreen")
-        except Exception as e:
-            self.controller.frames["ErrorScreen"].display_error_message(
-                f"There has been an error: {e}"
-            )
-            self.controller.show_frame("ErrorScreen")
+        create_blank_roster(timetable_path, crew_reqs_path, save_location)
+        self.controller.show_frame("HomeScreen")

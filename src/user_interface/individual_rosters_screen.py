@@ -4,6 +4,7 @@ from tkinter import Label
 from tkinter import Entry
 
 from individual_rosters.create_individual_rosters import create_individual_rosters
+from error_handling.error_handling_decorator import handle_errors
 
 
 class IndividualRostersScreen(Frame):
@@ -79,15 +80,10 @@ class IndividualRostersScreen(Frame):
         )
         self.back_button.grid(row=4, column=0, sticky="W", padx=25, pady=20)
 
+    @handle_errors
     def run_create_individual_rosters(
         self, final_roster_path, individual_roster_save_folder
     ):
         self.controller.show_frame("WaitScreen")
-        try:
-            create_individual_rosters(final_roster_path, individual_roster_save_folder)
-            self.controller.show_frame("HomeScreen")
-        except Exception as e:
-            self.controller.frames["ErrorScreen"].display_error_message(
-                f"There has been an error: {e}"
-            )
-            self.controller.show_frame("ErrorScreen")
+        create_individual_rosters(final_roster_path, individual_roster_save_folder)
+        self.controller.show_frame("HomeScreen")

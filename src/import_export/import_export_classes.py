@@ -8,6 +8,17 @@ import matplotlib.pyplot as plt
 class Data_Imports:
     """Parent Class for importing data."""
 
+    csv_extensions = [".csv"]
+    excel_extensions = [
+        ".xls",
+        ".xlsx",
+        ".xlsm",
+        ".xlsb",
+        ".odf",
+        ".ods",
+        ".odt",
+    ]
+
     def __init__(self):
         """Initiates the class."""
         self.data_import = None
@@ -17,17 +28,9 @@ class Data_Imports:
         """Attempts to import data from a csv or xlsx and checks whether columns are as
         expected."""
         _, file_extension = os.path.splitext(file_path)
-        if file_extension == ".csv":
+        if file_extension in Data_Imports.csv_extensions:
             self.data_import = pd.read_csv(file_path, dtype=self.expected_columns)
-        elif file_extension in [
-            ".xls",
-            ".xlsx",
-            ".xlsm",
-            ".xlsb",
-            ".odf",
-            ".ods",
-            ".odt",
-        ]:
+        elif file_extension in Data_Imports.excel_extensions:
             self.data_import = pd.read_excel(file_path, dtype=self.expected_columns)
         else:
             raise ValueError(
@@ -35,10 +38,29 @@ class Data_Imports:
                 "It should be either .csv or .xlsx"
             )
 
-        if "Date" in self.data_import.columns:
-            self.data_import["Date"] = pd.to_datetime(
-                self.data_import["Date"], dayfirst=True, infer_datetime_format=True
-            )
+        self.column_name_validation(file_path=file_path)
+        # self.column_type_validation(file_path=file_path)
+
+    def column_name_validation(self, file_path):
+        imported_columns = self.data_import.columns
+        if set(self.expected_columns.keys()).issubset(set(imported_columns)):
+            return
+        raise ValueError(
+            f"The file {file_path} does not contain the correct columns. \n"
+            f"The correct columns are {list(self.expected_columns.keys())}"
+        )
+
+    # def column_type_validation(self, file_path):
+    #     data_import_types = self.data_import.dtypes.apply(lambda x: x.name).to_dict()
+    #     if data_import_types != self.expected_columns:
+    #         raise ValueError(
+    #             f"The file {file_path} "
+    #         )
+
+    #     if "Date" in self.data_import.columns:
+    #         self.data_import["Date"] = pd.to_datetime(
+    #             self.data_import["Date"], dayfirst=True, infer_datetime_format=True
+    #         )
 
 
 class Data_Exports:

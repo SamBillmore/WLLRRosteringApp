@@ -5,6 +5,7 @@ from tkinter import Entry
 from tkinter import filedialog
 
 from blank_availability.create_blank_availability import create_blank_availability
+from error_handling.error_handling_decorator import handle_errors
 
 
 class BlankAvailabilityScreen(Frame):
@@ -63,17 +64,12 @@ class BlankAvailabilityScreen(Frame):
         )
         self.back_button.grid(row=3, column=0, sticky="W", padx=25, pady=20)
 
+    @handle_errors
     def run_create_blank_availability(self, timetable_path):
         """Creating blank availability forms."""
         save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
         self.controller.show_frame("WaitScreen")
-        try:
-            create_blank_availability(timetable_path, save_location)
-            self.controller.show_frame("HomeScreen")
-        except Exception as e:
-            self.controller.frames["ErrorScreen"].display_error_message(
-                f"There has been an error: {e}"
-            )
-            self.controller.show_frame("ErrorScreen")
+        create_blank_availability(timetable_path, save_location)
+        self.controller.show_frame("HomeScreen")
