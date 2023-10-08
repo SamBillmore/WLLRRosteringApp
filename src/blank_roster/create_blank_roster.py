@@ -40,8 +40,24 @@ class Blank_Roster(Data_Exports):
         self.timetable = timetable
         self.crew_requirements = crew_requirements
         self.data_export = self.timetable.merge(
-            self.crew_requirements, how="left", on="Timetable"
+            self.crew_requirements, how="outer", on="Timetable"
         )
         blank_roster_columns = self.data_export.columns.tolist() + self.blank_columns
         self.data_export = self.data_export.reindex(columns=blank_roster_columns)
+        self.validate_merge()
         self.export_data(filepath=save_location, sheet_name=sheet_name)
+
+    def validate_merge(self):
+        not_in_timetable = self.data_export[self.data_export["Date"].isna()]
+        not_in_crew_reqs = self.data_export[self.data_export["Turn"].isna()]
+        if len(not_in_timetable) > 0:
+            raise ValueError(
+                "There are entries in the crew requirements file that do not have "
+                f"a corresponding entry in the timetable file: \n{not_in_timetable}"
+            )
+        if len(not_in_crew_reqs) > 0:
+            raise ValueError(
+                "There are entries in the timetable file "
+                "that do not have a corresponding entry in the crew "
+                f"requirements file: \n{not_in_crew_reqs}"
+            )
