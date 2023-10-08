@@ -44,7 +44,7 @@ def test_import_validation_dates(tmp_path):
 
     # Then the data imported is as expected
     expected_data = pd.DataFrame(
-        {"Date": [pd.to_datetime("21/01/2023")], "Timetable": ["Blue"]}
+        {"Date": [pd.to_datetime("21/01/2023", dayfirst=True)], "Timetable": ["Blue"]}
     )
     assert_frame_equal(timetable.data_import, expected_data)
 
