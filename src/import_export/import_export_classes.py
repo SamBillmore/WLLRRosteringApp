@@ -8,6 +8,17 @@ import matplotlib.pyplot as plt
 class Data_Imports:
     """Parent Class for importing data."""
 
+    csv_extensions = [".csv"]
+    excel_extensions = [
+        ".xls",
+        ".xlsx",
+        ".xlsm",
+        ".xlsb",
+        ".odf",
+        ".ods",
+        ".odt",
+    ]
+
     def __init__(self):
         """Initiates the class."""
         self.data_import = None
@@ -17,28 +28,30 @@ class Data_Imports:
         """Attempts to import data from a csv or xlsx and checks whether columns are as
         expected."""
         _, file_extension = os.path.splitext(file_path)
-        if file_extension == ".csv":
-            self.data_import = pd.read_csv(file_path, dtype=self.expected_columns)
-        elif file_extension in [
-            ".xls",
-            ".xlsx",
-            ".xlsm",
-            ".xlsb",
-            ".odf",
-            ".ods",
-            ".odt",
-        ]:
-            self.data_import = pd.read_excel(file_path, dtype=self.expected_columns)
+        if file_extension in Data_Imports.csv_extensions:
+            import_func = pd.read_csv
+        elif file_extension in Data_Imports.excel_extensions:
+            import_func = pd.read_excel
         else:
             raise ValueError(
                 f"The file {file_path} is not of the correct type. \n"
                 "It should be either .csv or .xlsx"
             )
+        self.data_import = import_func(
+            file_path,
+            dtype=self.expected_columns,
+            converters={"Date": date_type_conversion},
+        )
+        self.column_name_validation(file_path=file_path)
 
-        if "Date" in self.data_import.columns:
-            self.data_import["Date"] = pd.to_datetime(
-                self.data_import["Date"], dayfirst=True, infer_datetime_format=True
-            )
+    def column_name_validation(self, file_path):
+        imported_columns = self.data_import.columns
+        if set(self.expected_columns.keys()).issubset(set(imported_columns)):
+            return
+        raise ValueError(
+            f"The file {file_path} does not contain the correct columns. \n"
+            f"The correct columns are {list(self.expected_columns.keys())}"
+        )
 
 
 class Data_Exports:
@@ -104,3 +117,7 @@ class Data_Exports:
                     f"An exception of type {type(err).__name__} occurred. \n"
                     f"Arguments:\n {err.args}"
                 )
+
+
+def date_type_conversion(xl_date):
+    return pd.to_datetime(xl_date, dayfirst=True, infer_datetime_format=True)

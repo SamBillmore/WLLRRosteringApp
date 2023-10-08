@@ -3,6 +3,8 @@ from tkinter import Button
 from tkinter import Label
 from tkinter import filedialog
 
+from error_handling.error_handling_decorator import handle_errors
+
 
 class MasterAvailabilityScreen(Frame):
     """Screen to provide the option to download the master availability."""
@@ -42,19 +44,14 @@ class MasterAvailabilityScreen(Frame):
         (master_availability)"""
         self.master_availability = master_availability
 
+    @handle_errors
     def save_master_availability(self):
         """Save master availability."""
         master_avail_save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
         self.controller.show_frame("WaitScreen")
-        try:
-            self.master_availability.export_data(
-                filepath=master_avail_save_location, sheet_name="master_availability"
-            )
-            self.controller.show_frame("HomeScreen")
-        except Exception as e:
-            self.controller.frames["ErrorScreen"].display_error_message(
-                f"There has been an error: {e}"
-            )
-            self.controller.show_frame("ErrorScreen")
+        self.master_availability.export_data(
+            filepath=master_avail_save_location, sheet_name="master_availability"
+        )
+        self.controller.show_frame("HomeScreen")

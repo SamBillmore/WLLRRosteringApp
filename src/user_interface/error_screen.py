@@ -33,7 +33,27 @@ class ErrorScreen(Frame, ResourcePath):
             font=font,
         )
         self.error_message = Label(
-            self, text="", bg=background_col, fg=foreground_col, font=font
+            self,
+            text="",
+            bg=background_col,
+            fg=foreground_col,
+            font=font,
+            justify="left",
+        )
+        self.traceback_label = Label(
+            self,
+            text="The full traceback is: ",
+            bg=background_col,
+            fg=foreground_col,
+            font=font,
+        )
+        self.full_traceback = Label(
+            self,
+            text="",
+            bg=background_col,
+            fg=foreground_col,
+            font=font,
+            justify="left",
         )
         self.back_button = Button(
             self,
@@ -46,9 +66,15 @@ class ErrorScreen(Frame, ResourcePath):
             row=1, column=0, sticky="W", padx=25, pady=20, columnspan=2
         )
         self.error_label.grid(row=2, column=0, sticky="W", padx=25, pady=0)
-        self.error_message.grid(row=3, column=0, sticky="W", padx=25, pady=0)
-        self.back_button.grid(row=4, column=0, sticky="W", padx=25, pady=20)
+        self.error_message.grid(row=3, column=0, sticky="W", padx=25, pady=20)
+        self.traceback_label.grid(row=4, column=0, sticky="W", padx=25, pady=0)
+        self.full_traceback.grid(row=5, column=0, sticky="W", padx=25, pady=20)
+        self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
 
     def display_error_message(self, error_message):
         """Update self.error_message."""
         self.error_message["text"] = error_message
+
+    def display_full_traceback(self, full_traceback):
+        """Update self.error_message."""
+        self.full_traceback["text"] = full_traceback
