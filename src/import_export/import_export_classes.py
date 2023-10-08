@@ -8,16 +8,16 @@ import matplotlib.pyplot as plt
 class Data_Imports:
     """Parent Class for importing data."""
 
-    csv_extensions = [".csv"]
-    excel_extensions = [
-        ".xls",
-        ".xlsx",
-        ".xlsm",
-        ".xlsb",
-        ".odf",
-        ".ods",
-        ".odt",
-    ]
+    extension_mapping = {
+        ".csv": pd.read_csv,
+        ".xls": pd.read_excel,
+        ".xlsx": pd.read_excel,
+        ".xlsm": pd.read_excel,
+        ".xlsb": pd.read_excel,
+        ".odf": pd.read_excel,
+        ".ods": pd.read_excel,
+        ".odt": pd.read_excel,
+    }
 
     def __init__(self):
         """Initiates the class."""
@@ -28,14 +28,11 @@ class Data_Imports:
         """Attempts to import data from a csv or xlsx and checks whether columns are as
         expected."""
         _, file_extension = os.path.splitext(file_path)
-        if file_extension in Data_Imports.csv_extensions:
-            import_func = pd.read_csv
-        elif file_extension in Data_Imports.excel_extensions:
-            import_func = pd.read_excel
-        else:
+        import_func = Data_Imports.extension_mapping.get(file_extension, None)
+        if not import_func:
             raise ValueError(
                 f"The file {file_path} is not of the correct type. \n"
-                "It should be either .csv or .xlsx"
+                f"It should be one of {set(Data_Imports.extension_mapping.keys())}"
             )
         self.data_import = import_func(
             file_path,
