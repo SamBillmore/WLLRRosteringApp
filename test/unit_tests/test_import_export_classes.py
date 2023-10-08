@@ -73,8 +73,7 @@ def test_import_validation_incorrect_filetype(tmp_path):
 
     # When we try to import the data then the correct exception is raised
     expected_error = (
-        f"The file {file} is not of the correct type. \nIt should be "
-        "either .csv or .xlsx"
+        f"The file {file} is not of the correct type. \nIt should be one of "
     )
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
