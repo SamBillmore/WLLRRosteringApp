@@ -32,7 +32,10 @@ def test_correct(asksaveasfilename, app, tmp_path):
     assert os.path.exists(output_file)
     expected_data = pd.DataFrame(
         {
-            "Date": [pd.to_datetime("21/01/2023"), pd.to_datetime("21/01/2023")],
+            "Date": [
+                pd.to_datetime("21/01/2023", dayfirst=True),
+                pd.to_datetime("21/01/2023", dayfirst=True),
+            ],
             "Timetable": ["Blue", "Blue"],
             "Turn": [1, 2],
             "Points": [4, 3],
