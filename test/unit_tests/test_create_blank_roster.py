@@ -43,7 +43,7 @@ from blank_roster.create_blank_roster import create_blank_roster
 def test_merge_not_valid_mismatch(
     timetable_data, crew_reqs_data, expected_error, tmp_path
 ):
-    # Given some input data and initial state
+    # Given some input data that is mismatched
     dir = tmp_path / "data"
     dir.mkdir()
     input_timetable_file = dir / "timetable_data.xlsx"
