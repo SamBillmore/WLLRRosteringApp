@@ -29,17 +29,20 @@ class Data_Imports:
         expected."""
         _, file_extension = os.path.splitext(file_path)
         if file_extension in Data_Imports.csv_extensions:
-            self.data_import = pd.read_csv(file_path, dtype=self.expected_columns)
+            import_func = pd.read_csv
         elif file_extension in Data_Imports.excel_extensions:
-            self.data_import = pd.read_excel(file_path, dtype=self.expected_columns)
+            import_func = pd.read_excel
         else:
             raise ValueError(
                 f"The file {file_path} is not of the correct type. \n"
                 "It should be either .csv or .xlsx"
             )
-
+        self.data_import = import_func(
+            file_path,
+            dtype=self.expected_columns,
+            converters={"Date": date_type_conversion},
+        )
         self.column_name_validation(file_path=file_path)
-        # self.column_type_validation(file_path=file_path)
 
     def column_name_validation(self, file_path):
         imported_columns = self.data_import.columns
@@ -49,18 +52,6 @@ class Data_Imports:
             f"The file {file_path} does not contain the correct columns. \n"
             f"The correct columns are {list(self.expected_columns.keys())}"
         )
-
-    # def column_type_validation(self, file_path):
-    #     data_import_types = self.data_import.dtypes.apply(lambda x: x.name).to_dict()
-    #     if data_import_types != self.expected_columns:
-    #         raise ValueError(
-    #             f"The file {file_path} "
-    #         )
-
-    #     if "Date" in self.data_import.columns:
-    #         self.data_import["Date"] = pd.to_datetime(
-    #             self.data_import["Date"], dayfirst=True, infer_datetime_format=True
-    #         )
 
 
 class Data_Exports:
@@ -126,3 +117,7 @@ class Data_Exports:
                     f"An exception of type {type(err).__name__} occurred. \n"
                     f"Arguments:\n {err.args}"
                 )
+
+
+def date_type_conversion(xl_date):
+    return pd.to_datetime(xl_date, dayfirst=True, infer_datetime_format=True)
