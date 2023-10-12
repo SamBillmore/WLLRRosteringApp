@@ -2,9 +2,7 @@ import pandas as pd
 import os
 import platform
 import xlwings as xw
-import matplotlib as mpl
-
-mpl.use("Agg")
+import matplotlib.pyplot as plt
 
 
 class Data_Imports:
@@ -97,7 +95,7 @@ class Data_Exports:
 
     def print_df_to_pdf(self, df, filepath):
         """Saves a pandas dataframe to a pdf using matplotlib."""
-        fig = mpl.pyplot.figure()
+        fig = plt.figure()
         ax = fig.add_subplot(111)
         cell_text = []
         for row in range(len(df)):
@@ -110,7 +108,7 @@ class Data_Exports:
         except Exception as e:
             err = e
         finally:
-            mpl.pyplot.close()
+            plt.close()
             if err is not None:
                 raise Exception(
                     f"An exception of type {type(err).__name__} occurred. \n"
