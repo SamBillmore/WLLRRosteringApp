@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  lint:
 
     runs-on: ubuntu-latest
 
@@ -25,10 +25,25 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install ."[dev, test]"
-        sudo apt install -y xvfb
+        pip install ."[dev]"
     - name: Run pre-commit hooks
       uses: pre-commit/action@v3.0.0
-    - name: Test with pytest
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.8"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ."[test]"
+        sudo apt install -y xvfb
+    - name: Run pytest
       run: |
         xvfb-run pytest
