@@ -4,11 +4,6 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 
 
-if os.environ.get("DISPLAY", "") == "":
-    print("no display found. Using :0.0")
-    os.environ.__setitem__("DISPLAY", ":0.0")
-
-
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
 def test_correct(asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
