@@ -1,35 +1,23 @@
 import pandas as pd
 
-from import_export.import_export_classes import Data_Imports
-from import_export.import_export_classes import Data_Exports
-
-from master_roster.create_master_availability import Crew_Members
-from master_roster.create_master_availability import Master_Availability
+from import_export.import_export_classes import DataImports
+from import_export.import_export_classes import DataExports
 
 
 def create_master_roster(
     working_roster_path,
-    driver_availability_folder,
-    fireman_availability_folder,
-    trainee_availability_folder,
+    master_availability,
     master_roster_save_location,
 ):
-    availability_folders = {
-        "Driver": driver_availability_folder,
-        "Fireman": fireman_availability_folder,
-        "Trainee": trainee_availability_folder,
-    }
     master_roster = Master_Roster()
-    master_availability = Master_Availability()
     master_roster.import_data(working_roster_path)
-    master_roster.create_master_roster(availability_folders, master_availability)
+    master_roster.create_master_roster(master_availability)
     master_roster.export_data(
         filepath=master_roster_save_location, sheet_name="master_roster"
     )
-    return master_availability
 
 
-class Master_Roster(Data_Imports, Data_Exports):
+class Master_Roster(DataImports, DataExports):
     """Master roster."""
 
     def __init__(self):
@@ -49,26 +37,21 @@ class Master_Roster(Data_Imports, Data_Exports):
             "Trainee": object,
         }
 
-    def create_master_roster(self, availability_folders, master_availability):
+    def create_master_roster(self, master_availability):
         """Controlling function for creating master roster."""
-        self.data_export = self.data_import
-        self.collate_input_data(availability_folders, master_availability)
-        for key in availability_folders.keys():
-            self.allocate_crew_members_to_turns(key)
+        self.data_export = (
+            self.data_import
+        )  # Sets output to be the imported working roster
+        self.master_availability = master_availability
+        self.set_up_points_tally()
+        for grade in set(self.master_availability.data_export["Grade"]):
+            self.allocate_crew_members_to_turns(grade=grade)
         self.data_export.pop("Points")
 
-    def collate_input_data(self, availability_folders, master_availability):
-        """Creates master availability from imports (including checking imports).
-
-        Creates the zeroed points tally. Save master availability to Excel.
-        """
-        crew_members = Crew_Members()
-        for key, value in availability_folders.items():
-            master_availability.create_master_availability(key, value, crew_members)
-        master_availability.data_export.sort_values(by=["Grade", "Date"], inplace=True)
-        crew_members.create_points_tally()
-        self.master_availability = master_availability.data_export
-        self.crew_members_points = crew_members.points_tally
+    def set_up_points_tally(self):
+        """Creates the zeroed points tally."""
+        self.master_availability.crew_members.create_points_tally()
+        self.crew_members_points = self.master_availability.crew_members.points_tally
 
     def allocate_crew_members_to_turns(self, grade):
         """
@@ -77,8 +60,8 @@ class Master_Roster(Data_Imports, Data_Exports):
         - points recorded in self.crew_members_points
         """
         # Filter master_availability for turn type and save to working_availability
-        self.working_availability = self.master_availability[
-            self.master_availability["Grade"] == grade
+        self.working_availability = self.master_availability.data_export[
+            self.master_availability.data_export["Grade"] == grade
         ]
         # Allocate points for turns already allocated in data_export
         self.initial_points_allocation(grade)

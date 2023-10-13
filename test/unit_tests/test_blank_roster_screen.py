@@ -51,7 +51,121 @@ def test_correct(asksaveasfilename, app, tmp_path):
 
 
 @mock.patch("user_interface.blank_roster_screen.filedialog.asksaveasfilename")
-def test_errors_raised_correctly(asksaveasfilename, app, tmp_path):
+def test_real_files(asksaveasfilename, app, tmp_path):
+    # Given some input data and initial state
+    input_timetable_file = "./test/unit_tests/input_data/Timetable.xlsx"
+    assert os.path.exists(input_timetable_file)
+    input_crew_reqs_file = "./test/unit_tests/input_data/Crew requirements.csv"
+    assert os.path.exists(input_crew_reqs_file)
+
+    blank_roster_screen = app.frames["BlankRosterScreen"]
+
+    dir = tmp_path / "data"
+    dir.mkdir()
+    output_file = dir / "output_data.xlsx"
+
+    # When we run the function
+    asksaveasfilename.return_value = output_file
+    blank_roster_screen.run_create_blank_roster(
+        timetable_path=input_timetable_file, crew_reqs_path=input_crew_reqs_file
+    )
+
+    # Then the file is created as expected
+    assert os.path.exists(output_file)
+    expected_data = pd.DataFrame(
+        {
+            "Date": [
+                pd.to_datetime("10/02/2018", dayfirst=True),
+                pd.to_datetime("11/02/2018", dayfirst=True),
+                pd.to_datetime("11/02/2018", dayfirst=True),
+                pd.to_datetime("11/02/2018", dayfirst=True),
+                pd.to_datetime("14/02/2018", dayfirst=True),
+                pd.to_datetime("15/02/2018", dayfirst=True),
+                pd.to_datetime("17/02/2018", dayfirst=True),
+                pd.to_datetime("18/02/2018", dayfirst=True),
+                pd.to_datetime("18/02/2018", dayfirst=True),
+                pd.to_datetime("18/02/2018", dayfirst=True),
+                pd.to_datetime("21/02/2018", dayfirst=True),
+                pd.to_datetime("22/02/2018", dayfirst=True),
+                pd.to_datetime("24/02/2018", dayfirst=True),
+                pd.to_datetime("25/02/2018", dayfirst=True),
+            ],
+            "Timetable": [
+                "Purple",
+                "Yellow",
+                "Yellow",
+                "Yellow",
+                "Purple",
+                "Purple",
+                "Purple",
+                "Yellow",
+                "Yellow",
+                "Yellow",
+                "Purple",
+                "Purple",
+                "Purple",
+                "Purple",
+            ],
+            "Turn": [1, 1, 2, 3, 1, 1, 1, 1, 2, 3, 1, 1, 1, 1],
+            "Points": [6, 3, 4, 2, 6, 6, 6, 3, 4, 2, 6, 6, 6, 6],
+            "Driver": [
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ],
+            "Fireman": [
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ],
+            "Trainee": [
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ],
+        }
+    )
+    actual_data = pd.read_excel(
+        output_file, dtype={"Driver": object, "Fireman": object, "Trainee": object}
+    )
+    assert_frame_equal(actual_data, expected_data)
+
+
+@mock.patch("user_interface.blank_roster_screen.filedialog.asksaveasfilename")
+def test_errors_raised_correctly(asksaveasfilename, app):
     # Given some initial state and input data that will raise an error
     blank_roster_screen = app.frames["BlankRosterScreen"]
     file_name = "bad_path.csv"

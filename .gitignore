@@ -51,3 +51,6 @@ docs/_build/
 
 # VSCode
 .vscode/
+
+# Project management
+todo.txt
