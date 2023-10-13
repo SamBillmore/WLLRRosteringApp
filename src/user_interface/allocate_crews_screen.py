@@ -4,6 +4,7 @@ from tkinter import Label
 from tkinter import Entry
 from tkinter import filedialog
 
+from master_roster.create_master_availability import create_master_availability
 from master_roster.create_master_roster import create_master_roster
 from error_handling.error_handling_decorator import handle_errors
 
@@ -133,11 +134,14 @@ class AllocateCrewsScreen(Frame):
             title="Choose a save location", defaultextension=".xlsx"
         )
         self.controller.show_frame("WaitScreen")
-        master_availability = create_master_roster(
-            working_roster_path,
+        master_availability = create_master_availability(
             driver_availability_folder,
             fireman_availability_folder,
             trainee_availability_folder,
+        )
+        create_master_roster(
+            working_roster_path,
+            master_availability,
             master_roster_save_location,
         )
         self.controller.frames["MasterAvailabilityScreen"].update_master_availability(

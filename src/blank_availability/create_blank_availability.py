@@ -1,7 +1,7 @@
 import pandas as pd
 
-from import_export.import_export_classes import Data_Imports
-from import_export.import_export_classes import Data_Exports
+from import_export.import_export_classes import DataImports
+from import_export.import_export_classes import DataExports
 
 
 def create_blank_availability(timetable_path, save_location):
@@ -12,7 +12,7 @@ def create_blank_availability(timetable_path, save_location):
     availability_form.create_availability_form(save_location)
 
 
-class Timetable(Data_Imports):
+class Timetable(DataImports):
     """Timetables as input by the user."""
 
     def __init__(self, timetable=None):
@@ -21,7 +21,7 @@ class Timetable(Data_Imports):
         self.expected_columns = {"Date": object, "Timetable": object}
 
 
-class Availability_Form(Data_Exports):
+class Availability_Form(DataExports):
     """Blank availability forms."""
 
     def __init__(self, dates=None):

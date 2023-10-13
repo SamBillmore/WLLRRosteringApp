@@ -5,7 +5,7 @@ import xlwings as xw
 import matplotlib.pyplot as plt
 
 
-class Data_Imports:
+class DataImports:
     """Parent Class for importing data."""
 
     extension_mapping = {
@@ -28,11 +28,11 @@ class Data_Imports:
         """Attempts to import data from a csv or xlsx and checks whether columns are as
         expected."""
         _, file_extension = os.path.splitext(file_path)
-        import_func = Data_Imports.extension_mapping.get(file_extension, None)
+        import_func = DataImports.extension_mapping.get(file_extension, None)
         if not import_func:
             raise ValueError(
                 f"The file {file_path} is not of the correct type. \n"
-                f"It should be one of {set(Data_Imports.extension_mapping.keys())}"
+                f"It should be one of {set(DataImports.extension_mapping.keys())}"
             )
         self.data_import = import_func(
             file_path,
@@ -51,7 +51,7 @@ class Data_Imports:
         )
 
 
-class Data_Exports:
+class DataExports:
     """Parent Class for exporting data."""
 
     def __init__(self):

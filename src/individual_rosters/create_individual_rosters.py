@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 
-from import_export.import_export_classes import Data_Imports
-from import_export.import_export_classes import Data_Exports
+from import_export.import_export_classes import DataImports
+from import_export.import_export_classes import DataExports
 
 
 def create_individual_rosters(final_roster_path, individual_roster_save_folder):
@@ -12,7 +12,7 @@ def create_individual_rosters(final_roster_path, individual_roster_save_folder):
     individual_rosters.create_individual_rosters(individual_roster_save_folder)
 
 
-class Individual_Rosters(Data_Imports, Data_Exports):
+class Individual_Rosters(DataImports, DataExports):
     """Create individual rosters for each crew member."""
 
     def __init__(self):

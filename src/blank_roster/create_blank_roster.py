@@ -1,5 +1,5 @@
-from import_export.import_export_classes import Data_Imports
-from import_export.import_export_classes import Data_Exports
+from import_export.import_export_classes import DataImports
+from import_export.import_export_classes import DataExports
 from blank_availability.create_blank_availability import Timetable
 
 
@@ -15,7 +15,7 @@ def create_blank_roster(timetable_path, crew_reqs_path, save_location):
     )
 
 
-class Crew_Requirements(Data_Imports):
+class Crew_Requirements(DataImports):
     """Crew requirements as input by the user."""
 
     def __init__(self, crew_reqs=None):
@@ -24,7 +24,7 @@ class Crew_Requirements(Data_Imports):
         self.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
 
 
-class Blank_Roster(Data_Exports):
+class Blank_Roster(DataExports):
     """Blank roster."""
 
     def __init__(self, timetable=None, crew_requirements=None):
@@ -41,7 +41,7 @@ class Blank_Roster(Data_Exports):
         self.crew_requirements = crew_requirements
         self.data_export = self.timetable.merge(
             self.crew_requirements, how="outer", on="Timetable"
-        )
+        ).sort_values(["Date", "Turn"], ascending=[True, True])
         blank_roster_columns = self.data_export.columns.tolist() + self.blank_columns
         self.data_export = self.data_export.reindex(columns=blank_roster_columns)
         self.validate_merge()

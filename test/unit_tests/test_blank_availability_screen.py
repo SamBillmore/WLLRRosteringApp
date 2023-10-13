@@ -66,7 +66,6 @@ def test_real_file(asksaveasfilename, app, tmp_path):
             "Available": [None, None, None, None, None, None, None, None, None, None],
         }
     )
-    expected_data.head()
     actual_data = pd.read_excel(output_file, dtype={"Available": object})
     assert_frame_equal(actual_data, expected_data)
 
