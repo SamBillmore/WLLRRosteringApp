@@ -16,7 +16,9 @@ def create_master_availability(
     master_availabilty = MasterAvailability()
     for key, value in availability_folders.items():
         master_availabilty.create_crew_member_objects(key, value)
-    master_availabilty.data_export.sort_values(by=["Grade", "Date"], inplace=True)
+    master_availabilty.data_export.sort_values(
+        by=["Grade", "Date", "Name"], inplace=True
+    )
     return master_availabilty
 
 
