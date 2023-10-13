@@ -70,8 +70,8 @@ def test_real_files(asksaveasfilename, app, tmp_path):
             "Turn": [1, 1, 2, 3, 1, 1, 1, 1, 2, 3, 1, 1, 1, 1],
             "Driver": [
                 "John Travis",
-                "John Travis",
                 "James Newby",
+                "John Travis",
                 "John Bancroft",
                 "John Bancroft",
                 "John Bancroft",
