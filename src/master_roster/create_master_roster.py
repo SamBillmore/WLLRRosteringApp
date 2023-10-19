@@ -46,7 +46,7 @@ class Master_Roster(DataImports, DataExports):
         )  # Sets output to be the imported working roster
         self.set_up_points_tally()
         self.initial_points_allocation()
-        for grade in set(self.master_availability["Grade"]):
+        for grade in ["Driver", "Fireman", "Trainee"]:
             self.allocate_crew_members_to_turns(grade=grade)
         self.data_export.pop("Points")
 
@@ -64,7 +64,7 @@ class Master_Roster(DataImports, DataExports):
         Remove that turn from master_availability.
         """
         for _, row in self.data_export.iterrows():
-            for grade in set(self.master_availability["Grade"]):
+            for grade in ["Driver", "Fireman", "Trainee"]:
                 if pd.notnull(row[grade]):
                     crew_member = row[grade]
                     points_to_add = row["Points"]
