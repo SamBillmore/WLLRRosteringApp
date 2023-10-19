@@ -4,6 +4,8 @@ import platform
 import xlwings as xw
 import matplotlib.pyplot as plt
 
+from standard_labels.standard_labels import StandardLabels
+
 
 class DataImports:
     """Parent Class for importing data."""
@@ -37,7 +39,7 @@ class DataImports:
         self.data_import = import_func(
             file_path,
             dtype=self.expected_columns,
-            converters={"Date": date_type_conversion},
+            converters={StandardLabels.date: date_type_conversion},
         )
         self.column_name_validation(file_path=file_path)
 
@@ -57,7 +59,7 @@ class DataExports:
     def __init__(self):
         """Initiates the class."""
         self.data_export = None
-        self.entry_values = ["Y", "N"]
+        self.entry_values = [StandardLabels.y, StandardLabels.n]
 
     def export_data(self, filepath, sheet_name, data_val_cells=None):
         """Exports data to a .xlsx.
