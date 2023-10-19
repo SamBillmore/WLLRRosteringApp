@@ -13,6 +13,7 @@ def create_master_roster(
 ):
     master_roster = Master_Roster(master_availability)
     master_roster.import_data(working_roster_path)
+    master_roster.validate_inputs()
     master_roster.create_master_roster()
     master_roster.export_data(
         filepath=master_roster_save_location, sheet_name="master_roster"
@@ -39,6 +40,21 @@ class Master_Roster(DataImports, DataExports):
             StandardLabels.fireman: object,
             StandardLabels.trainee: object,
         }
+
+    def validate_inputs(self):
+        working_roster_dates = set(self.data_import[StandardLabels.date])
+        availability_dates = set(self.master_availability[StandardLabels.date])
+        bad_dates = availability_dates - working_roster_dates
+        if bad_dates:
+            bad_availability_names = set(
+                self.master_availability[
+                    self.master_availability[StandardLabels.date].isin(bad_dates)
+                ][StandardLabels.name]
+            )
+            raise ValueError(
+                f"The availability dates for {bad_availability_names} do not "
+                "align with the dates in the working roster file."
+            )
 
     def create_master_roster(self):
         """Controlling function for creating master roster."""
