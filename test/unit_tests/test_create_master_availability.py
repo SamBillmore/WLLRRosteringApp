@@ -103,7 +103,7 @@ def test_create_master_availability_bad_availability(tmp_path):
     # When we run the function
     expected_error = (
         f"The file {driver_1_file} contains invalid "
-        "entries in the 'Available' column: {{'y'}}"
+        "entries in the 'Available' column: {'y'}"
     )
     with pytest.raises(ValueError, match=expected_error):
         create_master_availability(
