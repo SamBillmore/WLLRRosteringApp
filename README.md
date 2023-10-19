@@ -9,9 +9,9 @@ In order to provide a fixed timetable with volunteer labour, volunteers provide 
 ### Using the program
 
 The WLLR rostering app take inputs from .csv files or .xlsx files for:
-1. the timetable by day, showing the 'colour' of the timetable for that day (see 'test/Test input data' => 'Timetable.xlsx')
-2. the crew requirements for each 'colour' on the timetable (see 'test/Test input data' => 'Crew requirements.xlsx')
-3. each individual's availability put into the relevant folders depending on their grade (see the folders '01 Driver availability', '02 Fireman availability' and '03 Trainee availability')
+1. the timetable by day, showing the 'colour' of the timetable for that day (see 'test/unit_tests/input_data/Timetable.xlsx')
+2. the crew requirements for each 'colour' on the timetable (see 'test/unit_tests/input_data/Crew requirements.csv')
+3. each individual's availability put into the relevant folders depending on their grade (see the folders 'test/unit_tests/input_data/01 Driver availability', 'test/unit_tests/input_data/02 Fireman availability' and 'test/unit_tests/input_data/03 Trainee availability')
 
 The app takes the user through a number of steps including:
 1. Creating a blank availability form that can be sent to volunteers

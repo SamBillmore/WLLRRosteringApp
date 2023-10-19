@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import os
 
 from import_export.import_export_classes import DataImports
@@ -19,6 +20,7 @@ def create_master_availability(
     master_availabilty.data_export.sort_values(
         by=["Grade", "Date", "Name"], inplace=True
     )
+    master_availabilty.data_export.reset_index(drop=True, inplace=True)
     return master_availabilty
 
 
@@ -40,8 +42,9 @@ class MasterAvailability(DataExports):
             crew_member = CrewMember()
             crew_member.name = file_name.split(".")[0]
             crew_member.grade = grade
-            file_path = os.path.join(availability_folder + "/" + file_name)
+            file_path = os.path.join(availability_folder, file_name)
             crew_member.import_data(file_path)
+            crew_member.validate_data(file_path)
             self.append_availability(crew_member)
             self.crew_members.list_of_crew_members.append(crew_member)
 
@@ -61,12 +64,35 @@ class MasterAvailability(DataExports):
 class CrewMember(DataImports):
     """Availability as input by the user."""
 
+    valid_availability_values = {"Y", "N", None, np.nan}
+
     def __init__(self, availability=None, name=None, grade=None):
         """Initiates the class."""
         self.data_import = availability
         self.name = name
         self.grade = grade
         self.expected_columns = {"Date": object, "Available": object}
+
+    def validate_data(self, file_path):
+        self.validate_columns(file_path=file_path)
+        self.validate_availability_column(file_path=file_path)
+
+    def validate_columns(self, file_path):
+        actual_columns = set(self.data_import.columns)
+        expected_columns = set(self.expected_columns.keys())
+        if not actual_columns.issubset(expected_columns):
+            raise ValueError(
+                f"The file {file_path} contains additional unexpected columns"
+            )
+
+    def validate_availability_column(self, file_path):
+        available_column = set(self.data_import["Available"])
+        bad_entries = available_column - CrewMember.valid_availability_values
+        if bad_entries:
+            raise ValueError(
+                f"The file {file_path} contains invalid entries in the "
+                f"'Available' column: {bad_entries}"
+            )
 
 
 class CrewMembers:
