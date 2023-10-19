@@ -2,6 +2,7 @@ import pandas as pd
 
 from import_export.import_export_classes import DataImports
 from import_export.import_export_classes import DataExports
+from standard_labels.standard_labels import StandardLabels
 
 
 def create_blank_availability(timetable_path, save_location):
@@ -18,7 +19,10 @@ class Timetable(DataImports):
     def __init__(self, timetable=None):
         """Initiates the class."""
         self.data_import = timetable
-        self.expected_columns = {"Date": object, "Timetable": object}
+        self.expected_columns = {
+            StandardLabels.date: object,
+            StandardLabels.timetable: object,
+        }
 
 
 class Availability_Form(DataExports):
@@ -27,13 +31,13 @@ class Availability_Form(DataExports):
     def __init__(self, dates=None):
         """Initiates the class."""
         self.dates = dates
-        self.columns = ["Date", "Available"]
-        self.entry_values = ["Y", "N"]
+        self.columns = [StandardLabels.date, StandardLabels.available]
+        self.entry_values = [StandardLabels.y, StandardLabels.n]
         self.data_export = None
 
     def get_timetable_dates(self, timetable):
         """Populates self.dates from the dates in a timetable."""
-        self.dates = timetable.data_import["Date"]
+        self.dates = timetable.data_import[StandardLabels.date]
 
     def create_availability_form(self, save_location):
         """Creates a .xlsx document with self.dates, self.columns and limits the entry

@@ -3,6 +3,7 @@ from copy import copy
 
 from import_export.import_export_classes import DataImports
 from import_export.import_export_classes import DataExports
+from standard_labels.standard_labels import StandardLabels
 
 
 def create_master_roster(
@@ -30,13 +31,13 @@ class Master_Roster(DataImports, DataExports):
         self.crew_members_points = None
         self.data_export = None
         self.expected_columns = {
-            "Date": object,
-            "Timetable": object,
-            "Turn": int,
-            "Points": int,
-            "Driver": object,
-            "Fireman": object,
-            "Trainee": object,
+            StandardLabels.date: object,
+            StandardLabels.timetable: object,
+            StandardLabels.turn: int,
+            StandardLabels.points: int,
+            StandardLabels.driver: object,
+            StandardLabels.fireman: object,
+            StandardLabels.trainee: object,
         }
 
     def create_master_roster(self):
@@ -46,16 +47,16 @@ class Master_Roster(DataImports, DataExports):
         )  # Sets output to be the imported working roster
         self.set_up_points_tally()
         self.initial_points_allocation()
-        for grade in ["Driver", "Fireman", "Trainee"]:
+        for grade in StandardLabels.grades:
             self.allocate_crew_members_to_turns(grade=grade)
-        self.data_export.pop("Points")
+        self.data_export.pop(StandardLabels.points)
 
     def set_up_points_tally(self):
         """Creates the points tally attribute containing a list of crew and their points
         initially set to zero."""
         self.crew_members_points = pd.DataFrame(
             [[crew_member.name, 0] for crew_member in self.crew_members],
-            columns=["Name", "Points"],
+            columns=[StandardLabels.name, StandardLabels.points],
         )
 
     def initial_points_allocation(self):
@@ -64,12 +65,12 @@ class Master_Roster(DataImports, DataExports):
         Remove that turn from master_availability.
         """
         for _, row in self.data_export.iterrows():
-            for grade in ["Driver", "Fireman", "Trainee"]:
+            for grade in StandardLabels.grades:
                 if pd.notnull(row[grade]):
                     crew_member = row[grade]
-                    points_to_add = row["Points"]
+                    points_to_add = row[StandardLabels.points]
                     self.add_points(crew_member, points_to_add)
-                    date_to_remove = row["Date"]
+                    date_to_remove = row[StandardLabels.date]
                     self.remove_person_from_availability(
                         crew_member, date_to_remove, self.master_availability
                     )
@@ -82,7 +83,7 @@ class Master_Roster(DataImports, DataExports):
         """
         # Filter master_availability for turn type and save to working_availability
         self.working_availability = self.master_availability[
-            self.master_availability["Grade"] == grade
+            self.master_availability[StandardLabels.grade] == grade
         ]
         # Loop through number of uncovered turns
         for _, row in self.data_export.iterrows():
@@ -90,9 +91,9 @@ class Master_Roster(DataImports, DataExports):
                 # Remove days from self.working_availability with all turns covered
                 self.remove_rostered_days(grade)
                 # Find day with lowest non-zero number of available people
-                if self.working_availability["Date"].any():
+                if self.working_availability[StandardLabels.date].any():
                     working_date = (
-                        self.working_availability["Date"]
+                        self.working_availability[StandardLabels.date]
                         .value_counts()
                         .tail(1)
                         .index[0]
@@ -108,19 +109,25 @@ class Master_Roster(DataImports, DataExports):
         covered."""
         unallocated_turns = self.data_export.loc[self.data_export[grade].isnull()]
         df = self.working_availability
-        self.working_availability = df[df["Date"].isin(unallocated_turns["Date"])]
+        self.working_availability = df[
+            df[StandardLabels.date].isin(unallocated_turns[StandardLabels.date])
+        ]
 
     def crew_member_lowest_points(self, working_date):
         """Finds crew member for specific date with lowest number of points."""
         left_df = self.working_availability[
-            self.working_availability["Date"] == working_date
+            self.working_availability[StandardLabels.date] == working_date
         ]
         right_df = self.crew_members_points
         merged_df = pd.merge(
-            left_df, right_df, left_on="Name", right_on="Name", how="left"
+            left_df,
+            right_df,
+            left_on=StandardLabels.name,
+            right_on=StandardLabels.name,
+            how="left",
         )
-        merged_df.sort_values("Points", ascending=True, inplace=True)
-        return merged_df["Name"].iloc[0]
+        merged_df.sort_values(StandardLabels.points, ascending=True, inplace=True)
+        return merged_df[StandardLabels.name].iloc[0]
 
     def allocate_person_to_turn(self, person_for_turn, working_date, grade):
         """
@@ -131,29 +138,29 @@ class Master_Roster(DataImports, DataExports):
         """
         # Update self.data_export
         working_day_blanks = self.data_export[
-            (self.data_export["Date"] == working_date)
+            (self.data_export[StandardLabels.date] == working_date)
             & (self.data_export[grade].isna())
         ]
-        row_to_insert = working_day_blanks.sort_values("Points", ascending=False).index[
-            0
-        ]
+        row_to_insert = working_day_blanks.sort_values(
+            StandardLabels.points, ascending=False
+        ).index[0]
         self.data_export.at[row_to_insert, grade] = person_for_turn
         # Remove person from self.working_availability for working_date
         self.remove_person_from_availability(
             person_for_turn, working_date, self.working_availability
         )
         # Add points to self.crew_members_points
-        points_to_add = self.data_export["Points"][row_to_insert]
+        points_to_add = self.data_export[StandardLabels.points][row_to_insert]
         self.add_points(person_for_turn, points_to_add)
 
     def add_points(self, person, points_to_add):
         """Adds points for person to self.crew_member_points."""
-        if person in self.crew_members_points["Name"].values:
+        if person in self.crew_members_points[StandardLabels.name].values:
             row_index = self.crew_members_points.index[
-                self.crew_members_points["Name"] == person
+                self.crew_members_points[StandardLabels.name] == person
             ][0]
-            existing_points = self.crew_members_points["Points"][row_index]
-            self.crew_members_points.at[row_index, "Points"] = (
+            existing_points = self.crew_members_points[StandardLabels.points][row_index]
+            self.crew_members_points.at[row_index, StandardLabels.points] = (
                 points_to_add + existing_points
             )
 
@@ -161,8 +168,8 @@ class Master_Roster(DataImports, DataExports):
         """Removes person from availability for a specific day."""
         availability_df.drop(
             availability_df[
-                (availability_df["Name"] == person)
-                & (availability_df["Date"] == date_to_remove)
+                (availability_df[StandardLabels.name] == person)
+                & (availability_df[StandardLabels.date] == date_to_remove)
             ].index,
             inplace=True,
         )
