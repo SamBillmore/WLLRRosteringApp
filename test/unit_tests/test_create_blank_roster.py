@@ -106,10 +106,6 @@ def test_merge_valid(timetable_data, crew_reqs_data, expected_output, tmp_path):
     actual_data = pd.read_excel(
         output_file, dtype={"Driver": object, "Fireman": object, "Trainee": object}
     )
-    print(actual_data)
-    print(actual_data.dtypes)
-    print(expected_output)
-    print(expected_output.dtypes)
     assert_frame_equal(actual_data, expected_output)
 
 
