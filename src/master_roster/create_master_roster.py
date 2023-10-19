@@ -104,30 +104,32 @@ class Master_Roster(DataImports, DataExports):
         # Loop through number of uncovered turns
         for _, row in self.data_export.iterrows():
             if pd.isnull(row[grade]):
-                # Remove days from self.working_availability with all turns covered
-                self.remove_rostered_days(grade)
                 # Find day with lowest non-zero number of available people
                 if self.working_availability[StandardLabels.date].any():
-                    working_date = (
-                        self.working_availability[StandardLabels.date]
-                        .value_counts()
-                        .tail(1)
-                        .index[0]
-                    )
+                    availability_count = self.working_availability[
+                        StandardLabels.date
+                    ].value_counts()
+                    min_availability_dates = availability_count[
+                        availability_count == min(availability_count)
+                    ].index
+                    # If >1 low availability dates, find the date with highest points
+                    points_for_min_avail_dates = self.data_export[
+                        self.data_export[StandardLabels.date].isin(
+                            min_availability_dates
+                        )
+                    ][[StandardLabels.date, StandardLabels.points]]
+                    max_points_dates = points_for_min_avail_dates[
+                        points_for_min_avail_dates[StandardLabels.points]
+                        == max(points_for_min_avail_dates[StandardLabels.points])
+                    ][StandardLabels.date]
+                    # If multiple low avail, high point dates, pick first
+                    working_date = max_points_dates.iloc[0]
                     # Find crew_member from that day with least number of points
                     person_for_turn = self.crew_member_lowest_points(working_date)
-                    # Allocate person to turn, add points to crew_member.points and
-                    # store in self.data_export, remove person from working_availability
+                    # Allocate the turn to the person
                     self.allocate_person_to_turn(person_for_turn, working_date, grade)
-
-    def remove_rostered_days(self, grade):
-        """Removes rows from self.working_availability for dates that have all turns
-        covered."""
-        unallocated_turns = self.data_export.loc[self.data_export[grade].isnull()]
-        df = self.working_availability
-        self.working_availability = df[
-            df[StandardLabels.date].isin(unallocated_turns[StandardLabels.date])
-        ]
+                # Remove days from self.working_availability with all turns covered
+                self.remove_spare_availability_for_fully_covered_days(grade)
 
     def crew_member_lowest_points(self, working_date):
         """Finds crew member for specific date with lowest number of points."""
@@ -189,3 +191,12 @@ class Master_Roster(DataImports, DataExports):
             ].index,
             inplace=True,
         )
+
+    def remove_spare_availability_for_fully_covered_days(self, grade):
+        """Removes rows from self.working_availability for dates that have all turns
+        covered."""
+        unallocated_turns = self.data_export.loc[self.data_export[grade].isnull()]
+        df = self.working_availability
+        self.working_availability = df[
+            df[StandardLabels.date].isin(unallocated_turns[StandardLabels.date])
+        ]
