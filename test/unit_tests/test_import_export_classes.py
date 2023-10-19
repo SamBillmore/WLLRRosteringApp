@@ -27,12 +27,12 @@ def test_import_validation(tmp_path):
     assert_frame_equal(crew_reqs.data_import, input_data)
 
 
-def test_import_validation_dates(tmp_path):
+def test_import_validation_dates_excel(tmp_path):
     # Given some valid input data (containing dates) and initial state
     dir = tmp_path / "input_data"
     dir.mkdir()
     file = dir / "valid_data_dates.xlsx"
-    input_data = pd.DataFrame({"Date": ["21/01/2023"], "Timetable": ["Blue"]})
+    input_data = pd.DataFrame({"Date": ["11/01/2023"], "Timetable": ["Blue"]})
     input_data.to_excel(file, index=False)
     assert os.path.exists(file)
 
@@ -44,7 +44,29 @@ def test_import_validation_dates(tmp_path):
 
     # Then the data imported is as expected
     expected_data = pd.DataFrame(
-        {"Date": [pd.to_datetime("21/01/2023", dayfirst=True)], "Timetable": ["Blue"]}
+        {"Date": [pd.to_datetime("11/01/2023", dayfirst=True)], "Timetable": ["Blue"]}
+    )
+    assert_frame_equal(timetable.data_import, expected_data)
+
+
+def test_import_validation_dates_csv(tmp_path):
+    # Given some valid input data (containing dates) and initial state
+    dir = tmp_path / "input_data"
+    dir.mkdir()
+    file = dir / "valid_data_dates.csv"
+    input_data = pd.DataFrame({"Date": ["11/01/2023"], "Timetable": ["Blue"]})
+    input_data.to_csv(file, index=False)
+    assert os.path.exists(file)
+
+    timetable = Timetable()
+    timetable.expected_columns = {"Date": object, "Timetable": object}
+
+    # When we import data
+    timetable.import_data(file)
+
+    # Then the data imported is as expected
+    expected_data = pd.DataFrame(
+        {"Date": [pd.to_datetime("11/01/2023", dayfirst=True)], "Timetable": ["Blue"]}
     )
     assert_frame_equal(timetable.data_import, expected_data)
 

@@ -1,4 +1,5 @@
 import pandas as pd
+from copy import copy
 
 from import_export.import_export_classes import DataImports
 from import_export.import_export_classes import DataExports
@@ -9,9 +10,9 @@ def create_master_roster(
     master_availability,
     master_roster_save_location,
 ):
-    master_roster = Master_Roster()
+    master_roster = Master_Roster(master_availability)
     master_roster.import_data(working_roster_path)
-    master_roster.create_master_roster(master_availability)
+    master_roster.create_master_roster()
     master_roster.export_data(
         filepath=master_roster_save_location, sheet_name="master_roster"
     )
@@ -20,10 +21,11 @@ def create_master_roster(
 class Master_Roster(DataImports, DataExports):
     """Master roster."""
 
-    def __init__(self):
+    def __init__(self, master_availability):
         """Initiates the class."""
         self.data_import = None
-        self.master_availability = None
+        self.master_availability = copy(master_availability.data_export)
+        self.crew_members = master_availability.crew_members
         self.working_availability = None
         self.crew_members_points = None
         self.data_export = None
@@ -37,34 +39,51 @@ class Master_Roster(DataImports, DataExports):
             "Trainee": object,
         }
 
-    def create_master_roster(self, master_availability):
+    def create_master_roster(self):
         """Controlling function for creating master roster."""
         self.data_export = (
             self.data_import
         )  # Sets output to be the imported working roster
-        self.master_availability = master_availability
         self.set_up_points_tally()
-        for grade in set(self.master_availability.data_export["Grade"]):
+        self.initial_points_allocation()
+        for grade in set(self.master_availability["Grade"]):
             self.allocate_crew_members_to_turns(grade=grade)
         self.data_export.pop("Points")
 
     def set_up_points_tally(self):
-        """Creates the zeroed points tally."""
-        self.master_availability.crew_members.create_points_tally()
-        self.crew_members_points = self.master_availability.crew_members.points_tally
+        """Creates the points tally attribute containing a list of crew and their points
+        initially set to zero."""
+        self.crew_members_points = pd.DataFrame(
+            [[crew_member.name, 0] for crew_member in self.crew_members],
+            columns=["Name", "Points"],
+        )
+
+    def initial_points_allocation(self):
+        """Allocate points to individuals already allocated to turns.
+
+        Remove that turn from master_availability.
+        """
+        for _, row in self.data_export.iterrows():
+            for grade in set(self.master_availability["Grade"]):
+                if pd.notnull(row[grade]):
+                    crew_member = row[grade]
+                    points_to_add = row["Points"]
+                    self.add_points(crew_member, points_to_add)
+                    date_to_remove = row["Date"]
+                    self.remove_person_from_availability(
+                        crew_member, date_to_remove, self.master_availability
+                    )
 
     def allocate_crew_members_to_turns(self, grade):
         """
         Allocates individuals to turns for a single turn type based on:
-        - availability in self.data_import
+        - availability in self.master_availability
         - points recorded in self.crew_members_points
         """
         # Filter master_availability for turn type and save to working_availability
-        self.working_availability = self.master_availability.data_export[
-            self.master_availability.data_export["Grade"] == grade
+        self.working_availability = self.master_availability[
+            self.master_availability["Grade"] == grade
         ]
-        # Allocate points for turns already allocated in data_export
-        self.initial_points_allocation(grade)
         # Loop through number of uncovered turns
         for _, row in self.data_export.iterrows():
             if pd.isnull(row[grade]):
@@ -83,19 +102,6 @@ class Master_Roster(DataImports, DataExports):
                     # Allocate person to turn, add points to crew_member.points and
                     # store in self.data_export, remove person from working_availability
                     self.allocate_person_to_turn(person_for_turn, working_date, grade)
-
-    def initial_points_allocation(self, grade):
-        """Allocate points to individuals already allocated to turns Remove that turn
-        from working_availability."""
-        for _, row in self.data_export.iterrows():
-            if pd.notnull(row[grade]):
-                crew_member = row[grade]
-                points_to_add = row["Points"]
-                self.add_points(crew_member, points_to_add)
-                date_to_remove = row["Date"]
-                self.remove_person_from_working_availability(
-                    crew_member, date_to_remove
-                )
 
     def remove_rostered_days(self, grade):
         """Removes rows from self.working_availability for dates that have all turns
@@ -133,7 +139,9 @@ class Master_Roster(DataImports, DataExports):
         ]
         self.data_export.at[row_to_insert, grade] = person_for_turn
         # Remove person from self.working_availability for working_date
-        self.remove_person_from_working_availability(person_for_turn, working_date)
+        self.remove_person_from_availability(
+            person_for_turn, working_date, self.working_availability
+        )
         # Add points to self.crew_members_points
         points_to_add = self.data_export["Points"][row_to_insert]
         self.add_points(person_for_turn, points_to_add)
@@ -149,9 +157,12 @@ class Master_Roster(DataImports, DataExports):
                 points_to_add + existing_points
             )
 
-    def remove_person_from_working_availability(self, person, date_to_remove):
-        """Removes person from working availability for a specific day."""
-        df = self.working_availability
-        self.working_availability = df[
-            (df.Name != person) | (df.Date != date_to_remove)
-        ]
+    def remove_person_from_availability(self, person, date_to_remove, availability_df):
+        """Removes person from availability for a specific day."""
+        availability_df.drop(
+            availability_df[
+                (availability_df["Name"] == person)
+                & (availability_df["Date"] == date_to_remove)
+            ].index,
+            inplace=True,
+        )

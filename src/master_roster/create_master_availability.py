@@ -29,7 +29,7 @@ class MasterAvailability(DataExports):
 
     def __init__(self):
         """Initiates the class."""
-        self.crew_members = CrewMembers()
+        self.crew_members = []
         self.data_export = pd.DataFrame()
 
     def create_crew_member_objects(self, grade, availability_folder):
@@ -46,7 +46,7 @@ class MasterAvailability(DataExports):
             crew_member.import_data(file_path)
             crew_member.validate_data(file_path)
             self.append_availability(crew_member)
-            self.crew_members.list_of_crew_members.append(crew_member)
+            self.crew_members.append(crew_member)
 
     def append_availability(self, crew_member):
         """Appends an individual's availability to the master list."""
@@ -93,20 +93,3 @@ class CrewMember(DataImports):
                 f"The file {file_path} contains invalid entries in the "
                 f"'Available' column: {bad_entries}"
             )
-
-
-class CrewMembers:
-    """List of all crew members."""
-
-    def __init__(self):
-        """Initiates the class."""
-        self.list_of_crew_members = []
-        self.points_tally = pd.DataFrame()
-
-    def create_points_tally(self):
-        """Creates the points tally attribute containing a list of crew and their points
-        initially set to zero."""
-        self.points_tally = pd.DataFrame(
-            [[crew_member.name, 0] for crew_member in self.list_of_crew_members],
-            columns=["Name", "Points"],
-        )
