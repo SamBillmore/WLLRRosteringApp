@@ -181,3 +181,37 @@ def test_errors_raised_correctly(asksaveasfilename, app):
         error_screen.error_message["text"]
         == "[Errno 2] No such file or directory: 'bad_path.csv'"
     )
+
+
+@mock.patch("user_interface.blank_roster_screen.filedialog.asksaveasfilename")
+def test_cancel(asksaveasfilename, app, tmp_path):
+    # Given some input data and initial state
+    dir = tmp_path / "data"
+    dir.mkdir()
+    input_timetable_file = dir / "timetable_data.xlsx"
+    timetable_data = pd.DataFrame({"Date": ["21/01/2023"], "Timetable": ["Blue"]})
+    timetable_data.to_excel(input_timetable_file, index=False)
+    assert os.path.exists(input_timetable_file)
+    input_crew_reqs = dir / "crew_reqs.xlsx"
+    crew_reqs_data = pd.DataFrame(
+        {"Timetable": ["Blue", "Blue"], "Turn": [1, 2], "Points": [4, 3]}
+    )
+    crew_reqs_data.to_excel(input_crew_reqs, index=False)
+    assert os.path.exists(input_crew_reqs)
+
+    app.visible_frame = "BlankRosterScreen"
+    blank_roster_screen = app.frames["BlankRosterScreen"]
+
+    # When we run the function and click cancel
+    asksaveasfilename.return_value = ()
+    blank_roster_screen.run_create_blank_roster(input_timetable_file, input_crew_reqs)
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "BlankRosterScreen"
+
+    # And if we run the function and click cancel again
+    asksaveasfilename.return_value = ""
+    blank_roster_screen.run_create_blank_roster(input_timetable_file, input_crew_reqs)
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "BlankRosterScreen"

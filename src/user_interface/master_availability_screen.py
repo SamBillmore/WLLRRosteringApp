@@ -50,8 +50,9 @@ class MasterAvailabilityScreen(Frame):
         master_avail_save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
-        self.controller.show_frame("WaitScreen")
-        self.master_availability.export_data(
-            filepath=master_avail_save_location, sheet_name="master_availability"
-        )
-        self.controller.show_frame("HomeScreen")
+        if master_avail_save_location:
+            self.controller.show_frame("WaitScreen")
+            self.master_availability.export_data(
+                filepath=master_avail_save_location, sheet_name="master_availability"
+            )
+            self.controller.show_frame("HomeScreen")

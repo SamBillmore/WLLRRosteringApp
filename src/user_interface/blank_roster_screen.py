@@ -84,6 +84,7 @@ class BlankRosterScreen(Frame):
         save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
-        self.controller.show_frame("WaitScreen")
-        create_blank_roster(timetable_path, crew_reqs_path, save_location)
-        self.controller.show_frame("HomeScreen")
+        if save_location:
+            self.controller.show_frame("WaitScreen")
+            create_blank_roster(timetable_path, crew_reqs_path, save_location)
+            self.controller.show_frame("HomeScreen")
