@@ -129,11 +129,12 @@ class Master_Roster(DataImports, DataExports):
     def high_point_day(self, min_availability_dates):
         points_for_min_avail_dates = self.data_export[
             self.data_export[StandardLabels.date].isin(min_availability_dates)
-        ][[StandardLabels.date, StandardLabels.points]]
-        return points_for_min_avail_dates[
+        ]
+        max_point_dates = points_for_min_avail_dates[
             points_for_min_avail_dates[StandardLabels.points]
             == max(points_for_min_avail_dates[StandardLabels.points])
-        ][StandardLabels.date]
+        ]
+        return max_point_dates[StandardLabels.date]
 
     def crew_member_lowest_points(self, working_date):
         """Finds crew member for specific date with lowest number of points."""
