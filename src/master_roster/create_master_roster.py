@@ -100,11 +100,11 @@ class Master_Roster(DataImports, DataExports):
         # Filter master_availability for turn type and save to working_availability
         self.working_availability = self.master_availability[
             self.master_availability[StandardLabels.grade] == grade
-        ]
+        ].copy()
         # Loop through number of uncovered turns
         for _, row in self.data_export.iterrows():
             if pd.isnull(row[grade]):
-                if self.working_availability[StandardLabels.date].any():
+                if not self.working_availability.empty:
                     # Find day with lowest non-zero number of available people
                     min_availability_dates = self.lowest_availability_dates()
                     # If >1 low availability dates, find the date with highest points

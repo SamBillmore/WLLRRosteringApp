@@ -26,7 +26,7 @@ def test_correct(asksaveasfilename, app, tmp_path):
     # Then the file is created as expected
     assert os.path.exists(output_file)
     expected_data = pd.DataFrame(
-        {"Date": [pd.to_datetime("21/01/2023")], "Available": [None]}
+        {"Date": [pd.to_datetime("21/01/2023", dayfirst=True)], "Available": [None]}
     )
     actual_data = pd.read_excel(output_file, dtype={"Available": object})
     assert_frame_equal(actual_data, expected_data)
