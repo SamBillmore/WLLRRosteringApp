@@ -133,18 +133,19 @@ class AllocateCrewsScreen(Frame):
         master_roster_save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
-        self.controller.show_frame("WaitScreen")
-        master_availability = create_master_availability(
-            driver_availability_folder,
-            fireman_availability_folder,
-            trainee_availability_folder,
-        )
-        create_master_roster(
-            working_roster_path,
-            master_availability,
-            master_roster_save_location,
-        )
-        self.controller.frames["MasterAvailabilityScreen"].update_master_availability(
-            master_availability
-        )
-        self.controller.show_frame("MasterAvailabilityScreen")
+        if master_roster_save_location:
+            self.controller.show_frame("WaitScreen")
+            master_availability = create_master_availability(
+                driver_availability_folder,
+                fireman_availability_folder,
+                trainee_availability_folder,
+            )
+            create_master_roster(
+                working_roster_path,
+                master_availability,
+                master_roster_save_location,
+            )
+            self.controller.frames[
+                "MasterAvailabilityScreen"
+            ].update_master_availability(master_availability)
+            self.controller.show_frame("MasterAvailabilityScreen")

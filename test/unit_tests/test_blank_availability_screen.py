@@ -87,3 +87,31 @@ def test_errors_raised_correctly(asksaveasfilename, app):
         error_screen.error_message["text"]
         == "[Errno 2] No such file or directory: 'bad_path.csv'"
     )
+
+
+@mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
+def test_cancel(asksaveasfilename, app, tmp_path):
+    # Given some input data and initial state
+    dir = tmp_path / "data"
+    dir.mkdir()
+    input_file = dir / "valid_data.xlsx"
+    input_data = pd.DataFrame({"Date": ["21/01/2023"], "Timetable": ["Blue"]})
+    input_data.to_excel(input_file, index=False)
+    assert os.path.exists(input_file)
+
+    app.visible_frame = "BlankAvailabilityScreen"
+    blank_availability_screen = app.frames["BlankAvailabilityScreen"]
+
+    # When we run the function and click cancel
+    asksaveasfilename.return_value = ()
+    blank_availability_screen.run_create_blank_availability(input_file)
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "BlankAvailabilityScreen"
+
+    # And if we run the function and click cancel again
+    asksaveasfilename.return_value = ""
+    blank_availability_screen.run_create_blank_availability(input_file)
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "BlankAvailabilityScreen"

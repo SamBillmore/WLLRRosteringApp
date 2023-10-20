@@ -42,3 +42,36 @@ def test_correct(asksaveasfilename, app, tmp_path):
         }
     )
     assert_frame_equal(actual_data, expected_data)
+
+
+@mock.patch("user_interface.master_availability_screen.filedialog.asksaveasfilename")
+def test_cancel(asksaveasfilename, app):
+    # Given some input data and initial state
+    app.visible_frame = "MasterAvailabilityScreen"
+    master_availability_screen = app.frames["MasterAvailabilityScreen"]
+
+    master_availability_data = pd.DataFrame(
+        {
+            "Date": [pd.to_datetime("2018-01-05")],
+            "Grade": ["Driver"],
+            "Name": ["James Newby"],
+            "Available": ["Y"],
+        }
+    )
+    master_availability = MasterAvailability()
+    master_availability.data_export = master_availability_data
+    master_availability_screen.master_availability = master_availability
+
+    # When we run the function and click cancel
+    asksaveasfilename.return_value = ()
+    master_availability_screen.save_master_availability()
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "MasterAvailabilityScreen"
+
+    # And if we run the function and click cancel again
+    asksaveasfilename.return_value = ""
+    master_availability_screen.save_master_availability()
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "MasterAvailabilityScreen"

@@ -354,3 +354,43 @@ def test_errors_raised_correctly(asksaveasfilename, app):
         error_screen.error_message["text"]
         == "[Errno 2] No such file or directory: 'bad_path.csv'"
     )
+
+
+@mock.patch("user_interface.allocate_crews_screen.filedialog.asksaveasfilename")
+def test_cancel(asksaveasfilename, app):
+    # Given some input data and initial state
+    input_working_file = "./test/unit_tests/input_data/Working Roster.xlsx"
+    assert os.path.exists(input_working_file)
+    input_driver_dir = "./test/unit_tests/input_data/01 Driver availability"
+    input_fireman_dir = "./test/unit_tests/input_data/02 Fireman availability"
+    input_trainee_dir = "./test/unit_tests/input_data/03 Trainee availability"
+    assert os.path.exists(input_driver_dir)
+    assert os.path.exists(input_fireman_dir)
+    assert os.path.exists(input_trainee_dir)
+
+    app.visible_frame = "AllocateCrewsScreen"
+    allocate_crews_screen = app.frames["AllocateCrewsScreen"]
+
+    # When we run the function and click cancel
+    asksaveasfilename.return_value = ()
+    allocate_crews_screen.run_create_master_roster(
+        working_roster_path=input_working_file,
+        driver_availability_folder=input_driver_dir,
+        fireman_availability_folder=input_fireman_dir,
+        trainee_availability_folder=input_trainee_dir,
+    )
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "AllocateCrewsScreen"
+
+    # And if we run the function and click cancel again
+    asksaveasfilename.return_value = ""
+    allocate_crews_screen.run_create_master_roster(
+        working_roster_path=input_working_file,
+        driver_availability_folder=input_driver_dir,
+        fireman_availability_folder=input_fireman_dir,
+        trainee_availability_folder=input_trainee_dir,
+    )
+
+    # Then the app remains on the correct screen
+    assert app.visible_frame == "AllocateCrewsScreen"
