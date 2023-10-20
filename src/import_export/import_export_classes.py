@@ -42,15 +42,19 @@ class DataImports:
             converters={StandardLabels.date: date_type_conversion},
         )
         self.column_name_validation(file_path=file_path)
+        self.contains_rows_validation(file_path=file_path)
 
     def column_name_validation(self, file_path):
         imported_columns = self.data_import.columns
-        if set(self.expected_columns.keys()).issubset(set(imported_columns)):
-            return
-        raise ValueError(
-            f"The file {file_path} does not contain the correct columns. \n"
-            f"The correct columns are {list(self.expected_columns.keys())}"
-        )
+        if not set(self.expected_columns.keys()).issubset(set(imported_columns)):
+            raise ValueError(
+                f"The file {file_path} does not contain the correct columns. \n"
+                f"The correct columns are {list(self.expected_columns.keys())}"
+            )
+
+    def contains_rows_validation(self, file_path):
+        if self.data_import.empty:
+            raise ValueError(f"The file {file_path} does not contain any rows of data.")
 
 
 class DataExports:

@@ -165,3 +165,27 @@ def test_import_validation_incorrect_columns(tmp_path):
     f"The correct columns are {list(crew_reqs.expected_columns.keys())}"
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
+
+
+def test_import_validation_no_data(tmp_path):
+    # Given some invalid data (where the data type is incorrect)
+    dir = tmp_path / "input_data"
+    dir.mkdir()
+    file = dir / "no_data.xlsx"
+    input_data = pd.DataFrame(
+        {
+            "Timetable": [],
+            "Turn": [],
+            "Points": [],
+        }
+    )
+    input_data.to_excel(file, index=False)
+    assert os.path.exists(file)
+
+    crew_reqs = Crew_Requirements()
+    crew_reqs.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
+
+    # When we import data then the correct exception is raised
+    expected_error = f"The file {file} does not contain any rows of data."
+    with pytest.raises(ValueError, match=expected_error):
+        crew_reqs.import_data(file)

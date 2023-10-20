@@ -16,19 +16,21 @@ def test_create_master_roster_valid(tmp_path):
         {
             "Date": [
                 "10/02/2018",
+                "10/02/2018",
                 "11/02/2018",
                 "11/02/2018",
             ],
             "Timetable": [
                 "Purple",
+                "Purple",
                 "Yellow",
                 "Yellow",
             ],
-            "Turn": [1, 1, 2],
-            "Points": [4, 3, 2],
-            "Driver": [None, None, None],
-            "Fireman": [None, None, None],
-            "Trainee": [None, None, None],
+            "Turn": [0, 1, 1, 2],
+            "Points": [1, 4, 3, 2],
+            "Driver": [None, None, None, None],
+            "Fireman": [None, None, None, None],
+            "Trainee": [None, "No trainee", None, "Do not roster"],
         }
     )
     working_roster_data.to_excel(working_roster_file, index=False)
@@ -88,16 +90,19 @@ def test_create_master_roster_valid(tmp_path):
         {
             "Date": [
                 pd.to_datetime("10/02/2018", dayfirst=True),
+                pd.to_datetime("10/02/2018", dayfirst=True),
                 pd.to_datetime("11/02/2018", dayfirst=True),
                 pd.to_datetime("11/02/2018", dayfirst=True),
             ],
             "Timetable": [
                 "Purple",
+                "Purple",
                 "Yellow",
                 "Yellow",
             ],
-            "Turn": [1, 1, 2],
+            "Turn": [0, 1, 1, 2],
             "Driver": [
+                "driver 2",
                 "driver 1",
                 "driver 2",
                 None,
@@ -106,11 +111,13 @@ def test_create_master_roster_valid(tmp_path):
                 None,
                 None,
                 None,
+                None,
             ],
             "Trainee": [
                 None,
+                "No trainee",
                 None,
-                None,
+                "Do not roster",
             ],
         }
     )
