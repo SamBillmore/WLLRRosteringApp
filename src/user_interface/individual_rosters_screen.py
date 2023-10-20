@@ -30,7 +30,7 @@ class IndividualRostersScreen(Frame):
             fg=foreground_col,
             font=font,
         )
-        self.fin_roster_entry = Entry(self, width=50)
+        self.fin_roster_entry = Entry(self, width=60)
         self.fin_roster_button = Button(
             self,
             text="Browse",
@@ -44,7 +44,7 @@ class IndividualRostersScreen(Frame):
             fg=foreground_col,
             font=font,
         )
-        self.save_folder_entry = Entry(self, width=50)
+        self.save_folder_entry = Entry(self, width=60)
         self.save_folder_button = Button(
             self,
             text="Browse",

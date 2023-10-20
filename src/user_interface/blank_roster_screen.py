@@ -31,7 +31,7 @@ class BlankRosterScreen(Frame):
             fg=foreground_col,
             font=font,
         )
-        self.timetable_entry = Entry(self, width=50)
+        self.timetable_entry = Entry(self, width=40)
         self.timetable_path = Button(
             self,
             text="Browse",
@@ -45,7 +45,7 @@ class BlankRosterScreen(Frame):
             fg=foreground_col,
             font=font,
         )
-        self.crew_reqs_entry = Entry(self, width=50)
+        self.crew_reqs_entry = Entry(self, width=40)
         self.crew_reqs_path = Button(
             self,
             text="Browse",
