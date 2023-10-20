@@ -1,4 +1,5 @@
 import os
+from tkinter import END
 
 
 def test_real_file(app, tmp_path):
@@ -37,6 +38,6 @@ def test_errors_raised_correctly(app):
     assert app.visible_frame == "ErrorScreen"
     error_screen = app.frames["ErrorScreen"]
     assert (
-        error_screen.error_message["text"]
-        == "[Errno 2] No such file or directory: 'bad_path.csv'"
+        error_screen.error_message.get(1.0, END)
+        == "[Errno 2] No such file or directory: 'bad_path.csv'\n"
     )

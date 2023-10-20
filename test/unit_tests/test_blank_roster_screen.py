@@ -2,6 +2,7 @@ from unittest import mock
 import os
 import pandas as pd
 from pandas.testing import assert_frame_equal
+from tkinter import END
 
 
 @mock.patch("user_interface.blank_roster_screen.filedialog.asksaveasfilename")
@@ -178,8 +179,8 @@ def test_errors_raised_correctly(asksaveasfilename, app):
     assert app.visible_frame == "ErrorScreen"
     error_screen = app.frames["ErrorScreen"]
     assert (
-        error_screen.error_message["text"]
-        == "[Errno 2] No such file or directory: 'bad_path.csv'"
+        error_screen.error_message.get(1.0, END)
+        == "[Errno 2] No such file or directory: 'bad_path.csv'\n"
     )
 
 
