@@ -1,6 +1,5 @@
 import pytest
 import os
-import re
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
@@ -137,10 +136,8 @@ def test_create_master_availability_bad_date(tmp_path):
     trainee_dir.mkdir()
 
     # When we run the function
-    expected_error = re.escape(
-        "Unknown datetime string format, unable to "
-        "parse: Random string, at position 0 (sheet: 0)"
-    )
+    expected_error = f"The data in {driver_1_file} is not of the correct type. \n"
+    "Unknown datetime string format, unable to parse: Date, at position 0"
     with pytest.raises(ValueError, match=expected_error):
         create_master_availability(
             driver_availability_folder=driver_dir,

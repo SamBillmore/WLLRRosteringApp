@@ -3,6 +3,7 @@ import os
 import platform
 import xlwings as xw
 import matplotlib.pyplot as plt
+from copy import copy
 
 from standard_labels.standard_labels import StandardLabels
 
@@ -36,12 +37,9 @@ class DataImports:
                 f"The file {file_path} is not of the correct type. \n"
                 f"It should be one of {set(DataImports.extension_mapping.keys())}"
             )
-        self.data_import = import_func(
-            file_path,
-            dtype=self.expected_columns,
-            converters={StandardLabels.date: date_type_conversion},
-        )
+        self.data_import = import_func(file_path)
         self.column_name_validation(file_path=file_path)
+        self.datatype_conversion(file_path=file_path)
         self.contains_rows_validation(file_path=file_path)
 
     def column_name_validation(self, file_path):
@@ -51,6 +49,25 @@ class DataImports:
                 f"The file {file_path} does not contain the correct columns. \n"
                 f"The correct columns are {list(self.expected_columns.keys())}"
             )
+
+    def datatype_conversion(self, file_path):
+        data_types = copy(self.expected_columns)
+        date_included = data_types.pop(StandardLabels.date, None)
+        try:
+            self.data_import = self.data_import.astype(data_types)
+            if date_included:
+                self.date_type_conversion()
+        except ValueError as err:
+            raise ValueError(
+                f"The data in {file_path} is not of the correct type. \n{str(err)}"
+            )
+
+    def date_type_conversion(self):
+        self.data_import[StandardLabels.date] = pd.to_datetime(
+            self.data_import[StandardLabels.date],
+            dayfirst=True,
+            infer_datetime_format=True,
+        )
 
     def contains_rows_validation(self, file_path):
         if self.data_import.empty:
@@ -120,7 +137,3 @@ class DataExports:
                     f"An exception of type {type(err).__name__} occurred. \n"
                     f"Arguments:\n {err.args}"
                 )
-
-
-def date_type_conversion(xl_date):
-    return pd.to_datetime(xl_date, dayfirst=True, infer_datetime_format=True)
