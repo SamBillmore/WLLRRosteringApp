@@ -120,7 +120,11 @@ def test_import_validation_incorrect_dtype(tmp_path):
     crew_reqs.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
 
     # When we import data then the correct exception is raised
-    expected_error = re.escape("Unable to convert column Turn to type int64 (sheet: 0)")
+    expected_error = re.escape(
+        f"The data in {file} is not of the correct type. \n"
+        f"invalid literal for int() with base 10: 'Bad string': "
+        "Error while type casting for column 'Turn'"
+    )
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
 
@@ -138,10 +142,8 @@ def test_import_validation_incorrect_dtype_date(tmp_path):
     crew_reqs.expected_columns = {"Date": object, "Timetable": object}
 
     # When we import data then the correct exception is raised
-    expected_error = re.escape(
-        "Unknown datetime string format, unable to "
-        "parse: Not a date, at position 0 (sheet: 0)"
-    )
+    expected_error = f"The data in {file} is not of the correct type. \n"
+    "Unknown datetime string format, unable to parse: Date, at position 0"
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
 
