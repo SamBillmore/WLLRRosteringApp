@@ -14,8 +14,8 @@ def test_create_master_availability_valid(tmp_path):
     driver_1_data = pd.DataFrame(
         {
             "Date": [
-                pd.to_datetime("21/01/2023", dayfirst=True),
-                pd.to_datetime("22/01/2023", dayfirst=True),
+                "21/01/2023",
+                "22/01/2023",
             ],
             "Available": ["Y", None],
         }
@@ -26,8 +26,8 @@ def test_create_master_availability_valid(tmp_path):
     driver_2_data = pd.DataFrame(
         {
             "Date": [
-                pd.to_datetime("20/01/2023", dayfirst=True),
-                pd.to_datetime("22/01/2023", dayfirst=True),
+                "20/01/2023",
+                "22/01/2023",
             ],
             "Available": ["Y", None],
         }
@@ -41,8 +41,8 @@ def test_create_master_availability_valid(tmp_path):
     fireman_1_data = pd.DataFrame(
         {
             "Date": [
-                pd.to_datetime("21/01/2023", dayfirst=True),
-                pd.to_datetime("22/01/2023", dayfirst=True),
+                "21/01/2023",
+                "22/01/2023",
             ],
             "Available": ["N", "Y"],
         }
@@ -121,7 +121,7 @@ def test_create_master_availability_bad_date(tmp_path):
         {
             "Date": [
                 "Random string",
-                pd.to_datetime("22/01/2023", dayfirst=True),
+                "22/01/2023",
             ],
             "Available": ["y", None],
         }

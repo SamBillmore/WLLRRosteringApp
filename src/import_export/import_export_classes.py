@@ -66,7 +66,6 @@ class DataImports:
         self.data_import[StandardLabels.date] = pd.to_datetime(
             self.data_import[StandardLabels.date],
             dayfirst=True,
-            infer_datetime_format=True,
         )
 
     def contains_rows_validation(self, file_path):
