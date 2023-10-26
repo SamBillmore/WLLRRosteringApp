@@ -27,9 +27,10 @@ class WaitScreen(Frame, ResourcePath):
             font=font,
         )
 
-        self.picture.grid(row=0, column=0, padx=50, pady=50, columnspan=2)
-        self.polite_label.grid(
-            row=1, column=0, sticky="W", padx=25, pady=20, columnspan=2
-        )
-
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=3)
+
+        self.picture.grid(row=1, column=1, padx=50, pady=50)
+        self.polite_label.grid(row=2, column=1, sticky="W", padx=25, pady=20)

@@ -33,11 +33,16 @@ class MasterAvailabilityScreen(Frame):
             command=lambda: self.controller.show_frame("HomeScreen"),
         )
 
+        self.grid_columnconfigure(0, weight=2)
+        self.grid_columnconfigure(3, weight=2)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=3)
+
         self.intro_label.grid(
-            row=0, column=0, sticky="W", padx=25, pady=20, columnspan=2
+            row=1, column=1, sticky="W", padx=25, pady=20, columnspan=2
         )
-        self.yes_button.grid(row=1, column=1, sticky="W", padx=25, pady=20)
-        self.no_button.grid(row=1, column=0, sticky="W", padx=25, pady=20)
+        self.no_button.grid(row=2, column=1, sticky="W", padx=25, pady=20)
+        self.yes_button.grid(row=2, column=2, sticky="E", padx=25, pady=20)
 
     def update_master_availability(self, master_availability):
         """Update self.master_availability to hold an instance of the object
