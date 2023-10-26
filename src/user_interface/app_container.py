@@ -1,6 +1,7 @@
 from tkinter import Tk
 from tkinter import Frame
 from tkinter import filedialog
+import platform
 
 from user_interface.resource_path import ResourcePath
 from user_interface.home_screen import HomeScreen
@@ -21,8 +22,9 @@ class App(Tk, ResourcePath):
         Tk.__init__(self)
 
         self.title("WLLR footplate crew rostering program")
-        self.icon_path = "src/user_interface/rostering_app_icon.ico"
-        self.iconbitmap(self.resource_path(self.icon_path))
+        if platform.system() == "Windows":
+            self.icon_path = "src/user_interface/rostering_app_icon.ico"
+            self.iconbitmap(self.resource_path(self.icon_path))
         self.geometry("850x600+250+100")
         self.frame_names_list = (
             HomeScreen,
