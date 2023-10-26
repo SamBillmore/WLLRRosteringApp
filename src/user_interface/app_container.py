@@ -2,6 +2,7 @@ from tkinter import Tk
 from tkinter import Frame
 from tkinter import filedialog
 
+from user_interface.resource_path import ResourcePath
 from user_interface.home_screen import HomeScreen
 from user_interface.blank_availability_screen import BlankAvailabilityScreen
 from user_interface.blank_roster_screen import BlankRosterScreen
@@ -12,7 +13,7 @@ from user_interface.error_screen import ErrorScreen
 from user_interface.wait_screen import WaitScreen
 
 
-class App(Tk):
+class App(Tk, ResourcePath):
     """Overall container for app Individual screens are raised within this container."""
 
     def __init__(self):
@@ -20,6 +21,8 @@ class App(Tk):
         Tk.__init__(self)
 
         self.title("WLLR footplate crew rostering program")
+        self.icon_path = "src/user_interface/rostering_app_icon.ico"
+        self.iconbitmap(self.resource_path(self.icon_path))
         self.geometry("850x600+250+100")
         self.frame_names_list = (
             HomeScreen,

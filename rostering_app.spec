@@ -5,7 +5,8 @@ block_cipher = None
 added_files = [
     ('src/user_interface/home_screen_pic.png','src/user_interface'),
     ('src/user_interface/error_screen_pic.png','src/user_interface'),
-    ('src/user_interface/wait_screen_pic.png','src/user_interface')
+    ('src/user_interface/wait_screen_pic.png','src/user_interface'),
+    ('src/user_interface/rostering_app_icon.ico','src/user_interface'),
 ]
 
 a = Analysis(
@@ -25,12 +26,12 @@ a = Analysis(
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
-    noarchive=False
+    noarchive=False,
 )
 pyz = PYZ(
     a.pure,
     a.zipped_data,
-    cipher=block_cipher
+    cipher=block_cipher,
 )
 exe = EXE(
     pyz,
@@ -46,5 +47,5 @@ exe = EXE(
     upx=True,
     runtime_tmpdir=None,
     console=False,
-    icon='rostering_app_icon.ico'
+    icon='src/user_interface/rostering_app_icon.ico',
 )
