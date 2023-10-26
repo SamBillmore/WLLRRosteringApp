@@ -22,6 +22,7 @@ class IndividualRostersScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.fin_roster_label = Label(
             self,
@@ -29,8 +30,9 @@ class IndividualRostersScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.fin_roster_entry = Entry(self, width=60)
+        self.fin_roster_entry = Entry(self)
         self.fin_roster_button = Button(
             self,
             text="Browse",
@@ -43,8 +45,9 @@ class IndividualRostersScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.save_folder_entry = Entry(self, width=60)
+        self.save_folder_entry = Entry(self)
         self.save_folder_button = Button(
             self,
             text="Browse",
@@ -66,21 +69,22 @@ class IndividualRostersScreen(Frame):
             command=lambda: self.controller.show_frame("HomeScreen"),
         )
 
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, minsize=90)
+
         self.intro_label.grid(
             row=0, column=0, sticky="W", padx=25, pady=20, columnspan=2
         )
         self.fin_roster_label.grid(row=1, column=0, sticky="W", padx=25, pady=20)
-        self.fin_roster_entry.grid(row=1, column=1, sticky="W", padx=0, pady=0)
-        self.fin_roster_button.grid(row=1, column=2, sticky="E", padx=0, pady=0)
+        self.fin_roster_entry.grid(row=1, column=1, sticky="EW", padx=0, pady=0)
+        self.fin_roster_button.grid(row=1, column=2, sticky="W", padx=5, pady=0)
         self.save_folder_label.grid(row=2, column=0, sticky="W", padx=25, pady=20)
-        self.save_folder_entry.grid(row=2, column=1, sticky="W", padx=0, pady=0)
-        self.save_folder_button.grid(row=2, column=2, sticky="E", padx=0, pady=0)
+        self.save_folder_entry.grid(row=2, column=1, sticky="EW", padx=0, pady=0)
+        self.save_folder_button.grid(row=2, column=2, sticky="W", padx=5, pady=0)
         self.create_indiv_roster_button.grid(
             row=3, column=1, sticky="E", padx=0, pady=15
         )
         self.back_button.grid(row=4, column=0, sticky="W", padx=25, pady=20)
-
-        self.grid_columnconfigure(0, weight=1)
 
     @handle_errors
     def run_create_individual_rosters(

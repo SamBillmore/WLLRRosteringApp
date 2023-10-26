@@ -27,6 +27,7 @@ class ErrorScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.error_label = Label(
             self,
@@ -34,6 +35,7 @@ class ErrorScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.error_message = Text(
             self,
@@ -50,6 +52,7 @@ class ErrorScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.full_traceback = Text(
             self,
@@ -66,6 +69,12 @@ class ErrorScreen(Frame, ResourcePath):
             width=19,
             command=lambda: self.controller.show_frame("HomeScreen"),
         )
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(3, minsize=10)
+        self.grid_rowconfigure(5, weight=1)
+        self.grid_rowconfigure(5, minsize=40)
 
         self.error_message["yscrollcommand"] = self.error_scrollbar.set
         self.full_traceback["yscrollcommand"] = self.traceback_scrollbar.set
