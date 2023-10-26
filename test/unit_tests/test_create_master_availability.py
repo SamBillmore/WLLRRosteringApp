@@ -1,5 +1,6 @@
 import pytest
 import os
+import re
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
@@ -101,7 +102,7 @@ def test_create_master_availability_bad_availability(tmp_path):
 
     # When we run the function
     expected_error = (
-        f"The file {driver_1_file} contains invalid "
+        f"The file {re.escape(str(driver_1_file))} contains invalid "
         "entries in the 'Available' column: {'y'}"
     )
     with pytest.raises(ValueError, match=expected_error):
@@ -136,8 +137,10 @@ def test_create_master_availability_bad_date(tmp_path):
     trainee_dir.mkdir()
 
     # When we run the function
-    expected_error = f"The data in {driver_1_file} is not of the correct type. \n"
-    "Unknown datetime string format, unable to parse: Date, at position 0"
+    expected_error = (
+        f"The data in {re.escape(str(driver_1_file))} is not of the correct type. \n"
+        "Unknown datetime string format, unable to parse: Random string, at position 0"
+    )
     with pytest.raises(ValueError, match=expected_error):
         create_master_availability(
             driver_availability_folder=driver_dir,
@@ -171,7 +174,8 @@ def test_create_master_availability_extra_column(tmp_path):
     trainee_dir.mkdir()
 
     # When we run the function
-    expected_error = f"The file {driver_1_file} contains additional unexpected columns"
+    expected_error = f"The file {re.escape(str(driver_1_file))} contains "
+    "additional unexpected columns"
     with pytest.raises(ValueError, match=expected_error):
         create_master_availability(
             driver_availability_folder=driver_dir,
