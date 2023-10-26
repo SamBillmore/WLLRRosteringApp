@@ -2,12 +2,15 @@ from tkinter import Frame
 from tkinter import Button
 from tkinter import Label
 from tkinter import PhotoImage
+from tkinter import filedialog
 
 from user_interface.blank_availability_screen import BlankAvailabilityScreen
 from user_interface.blank_roster_screen import BlankRosterScreen
 from user_interface.allocate_crews_screen import AllocateCrewsScreen
 from user_interface.individual_rosters_screen import IndividualRostersScreen
 from user_interface.resource_path import ResourcePath
+from example_base_inputs.create_example_base_inputs import create_example_base_inputs
+from error_handling.error_handling_decorator import handle_errors
 
 
 class HomeScreen(Frame, ResourcePath):
@@ -105,6 +108,12 @@ class HomeScreen(Frame, ResourcePath):
             anchor="w",
         )
 
+        self.step_1_button = Button(
+            self,
+            text="Create examples",
+            width=18,
+            command=lambda: self.run_create_example_base_inputs(),
+        )
         self.step_2_button = Button(
             self,
             text="Blank availability",
@@ -146,7 +155,18 @@ class HomeScreen(Frame, ResourcePath):
         self.step_6_label.grid(row=9, column=0, sticky="EW", padx=40, pady=10)
         self.step_7_label.grid(row=10, column=0, sticky="EW", padx=40, pady=10)
 
+        self.step_1_button.grid(
+            row=2, column=1, sticky="EW", padx=30, pady=0, rowspan=3
+        )
         self.step_2_button.grid(row=5, column=1, sticky="EW", padx=30, pady=0)
         self.step_3_button.grid(row=6, column=1, sticky="EW", padx=30, pady=0)
         self.step_5_button.grid(row=8, column=1, sticky="EW", padx=30, pady=0)
         self.step_7_button.grid(row=10, column=1, sticky="EW", padx=30, pady=0)
+
+    @handle_errors
+    def run_create_example_base_inputs(self):
+        save_location = filedialog.askdirectory(title="Choose a save location")
+        if save_location:
+            self.controller.show_frame("WaitScreen")
+            create_example_base_inputs(save_location)
+            self.controller.show_frame("HomeScreen")
