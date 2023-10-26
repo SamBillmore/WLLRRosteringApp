@@ -23,6 +23,7 @@ class BlankAvailabilityScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.timetable_label = Label(
             self,
@@ -30,8 +31,9 @@ class BlankAvailabilityScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.timetable_entry = Entry(self, width=50)
+        self.timetable_entry = Entry(self)
         self.timetable_path = Button(
             self,
             text="Browse",
@@ -53,12 +55,15 @@ class BlankAvailabilityScreen(Frame):
             command=lambda: self.controller.show_frame("HomeScreen"),
         )
 
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, minsize=90)
+
         self.intro_label.grid(
             row=0, column=0, sticky="W", padx=25, pady=20, columnspan=2
         )
         self.timetable_label.grid(row=1, column=0, sticky="W", padx=25, pady=20)
-        self.timetable_entry.grid(row=1, column=1, sticky="W", padx=0, pady=0)
-        self.timetable_path.grid(row=1, column=2, sticky="E", padx=0, pady=0)
+        self.timetable_entry.grid(row=1, column=1, sticky="EW", padx=0, pady=0)
+        self.timetable_path.grid(row=1, column=2, sticky="W", padx=5, pady=0)
         self.create_blank_avail_button.grid(
             row=2, column=1, sticky="E", padx=0, pady=15
         )

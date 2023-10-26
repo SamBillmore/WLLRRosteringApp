@@ -27,6 +27,7 @@ class ErrorScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.error_label = Label(
             self,
@@ -34,6 +35,7 @@ class ErrorScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.error_message = Text(
             self,
@@ -50,6 +52,7 @@ class ErrorScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.full_traceback = Text(
             self,
@@ -67,6 +70,12 @@ class ErrorScreen(Frame, ResourcePath):
             command=lambda: self.controller.show_frame("HomeScreen"),
         )
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(3, minsize=10)
+        self.grid_rowconfigure(5, weight=1)
+        self.grid_rowconfigure(5, minsize=40)
+
         self.error_message["yscrollcommand"] = self.error_scrollbar.set
         self.full_traceback["yscrollcommand"] = self.traceback_scrollbar.set
 
@@ -81,6 +90,8 @@ class ErrorScreen(Frame, ResourcePath):
         self.full_traceback.grid(row=5, column=0, sticky="NESW", padx=25, pady=20)
         self.traceback_scrollbar.grid(row=5, column=1, sticky="NESW", padx=0, pady=20)
         self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
+
+        self.grid_columnconfigure(0, weight=1)
 
     def display_error_message(self, error_message):
         """Update self.error_message."""

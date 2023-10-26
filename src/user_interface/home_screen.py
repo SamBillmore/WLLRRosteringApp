@@ -37,6 +37,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_1a_label = Label(
             self,
@@ -44,6 +45,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_1b_label = Label(
             self,
@@ -51,6 +53,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_2_label = Label(
             self,
@@ -58,6 +61,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_3_label = Label(
             self,
@@ -65,14 +69,16 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_4_label = Label(
             self,
-            text="""Step 4: Open blank roster file and
-             enter any specific crew allocations""",
+            text="Step 4: Open blank roster file and "
+            "enter any specific crew allocations",
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_5_label = Label(
             self,
@@ -80,6 +86,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_6_label = Label(
             self,
@@ -87,6 +94,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.step_7_label = Label(
             self,
@@ -94,6 +102,7 @@ class HomeScreen(Frame, ResourcePath):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
 
         self.step_2_button = Button(
@@ -121,19 +130,23 @@ class HomeScreen(Frame, ResourcePath):
             command=lambda: controller.show_frame(IndividualRostersScreen.__name__),
         )
 
-        self.picture.grid(row=0, column=0, padx=5, pady=5, columnspan=2)
-        self.intro_label.grid(row=1, column=0, padx=55, pady=15, columnspan=2)
-        self.step_1_label.grid(row=2, column=0, sticky="W", padx=55, pady=0)
-        self.step_1a_label.grid(row=3, column=0, sticky="W", padx=55, pady=0)
-        self.step_1b_label.grid(row=4, column=0, sticky="W", padx=55, pady=0)
-        self.step_2_label.grid(row=5, column=0, sticky="W", padx=55, pady=15)
-        self.step_3_label.grid(row=6, column=0, sticky="W", padx=55, pady=10)
-        self.step_4_label.grid(row=7, column=0, sticky="W", padx=55, pady=10)
-        self.step_5_label.grid(row=8, column=0, sticky="W", padx=55, pady=10)
-        self.step_6_label.grid(row=9, column=0, sticky="W", padx=55, pady=10)
-        self.step_7_label.grid(row=10, column=0, sticky="W", padx=55, pady=10)
+        self.grid_columnconfigure(0, weight=1)
 
-        self.step_2_button.grid(row=5, column=1, sticky="W")
-        self.step_3_button.grid(row=6, column=1, sticky="W")
-        self.step_5_button.grid(row=8, column=1, sticky="W")
-        self.step_7_button.grid(row=10, column=1, sticky="W")
+        self.picture.grid(row=0, column=0, padx=5, pady=5, columnspan=2)
+        self.intro_label.grid(row=1, column=0, padx=0, pady=15, columnspan=2)
+        self.step_1_label.grid(row=2, column=0, sticky="EW", padx=40, pady=0)
+        self.step_1a_label.grid(row=3, column=0, sticky="EW", padx=40, pady=0)
+        self.step_1b_label.grid(row=4, column=0, sticky="EW", padx=40, pady=0)
+        self.step_2_label.grid(row=5, column=0, sticky="EW", padx=40, pady=15)
+        self.step_3_label.grid(row=6, column=0, sticky="EW", padx=40, pady=10)
+        self.step_4_label.grid(
+            row=7, column=0, sticky="EW", padx=40, pady=10, columnspan=2
+        )
+        self.step_5_label.grid(row=8, column=0, sticky="EW", padx=40, pady=10)
+        self.step_6_label.grid(row=9, column=0, sticky="EW", padx=40, pady=10)
+        self.step_7_label.grid(row=10, column=0, sticky="EW", padx=40, pady=10)
+
+        self.step_2_button.grid(row=5, column=1, sticky="EW", padx=30, pady=0)
+        self.step_3_button.grid(row=6, column=1, sticky="EW", padx=30, pady=0)
+        self.step_5_button.grid(row=8, column=1, sticky="EW", padx=30, pady=0)
+        self.step_7_button.grid(row=10, column=1, sticky="EW", padx=30, pady=0)

@@ -24,6 +24,7 @@ class AllocateCrewsScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
         self.driver_avail_label = Label(
             self,
@@ -31,8 +32,9 @@ class AllocateCrewsScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.driver_avail_entry = Entry(self, width=50)
+        self.driver_avail_entry = Entry(self)
         self.driver_avail_button = Button(
             self,
             text="Browse",
@@ -45,8 +47,9 @@ class AllocateCrewsScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.fireman_avail_entry = Entry(self, width=50)
+        self.fireman_avail_entry = Entry(self)
         self.fireman_avail_button = Button(
             self,
             text="Browse",
@@ -59,8 +62,9 @@ class AllocateCrewsScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.trainee_avail_entry = Entry(self, width=50)
+        self.trainee_avail_entry = Entry(self)
         self.trainee_avail_button = Button(
             self,
             text="Browse",
@@ -73,8 +77,9 @@ class AllocateCrewsScreen(Frame):
             bg=background_col,
             fg=foreground_col,
             font=font,
+            anchor="w",
         )
-        self.blank_roster_entry = Entry(self, width=50)
+        self.blank_roster_entry = Entry(self)
         self.blank_roster_button = Button(
             self,
             text="Browse",
@@ -99,21 +104,24 @@ class AllocateCrewsScreen(Frame):
             command=lambda: self.controller.show_frame("HomeScreen"),
         )
 
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, minsize=90)
+
         self.instruction_label.grid(
             row=0, column=0, sticky="W", padx=25, pady=20, columnspan=2
         )
         self.driver_avail_label.grid(row=1, column=0, sticky="W", padx=25, pady=0)
-        self.driver_avail_entry.grid(row=1, column=1, sticky="E", padx=0, pady=0)
-        self.driver_avail_button.grid(row=1, column=2, sticky="W", padx=0, pady=0)
+        self.driver_avail_entry.grid(row=1, column=1, sticky="EW", padx=0, pady=0)
+        self.driver_avail_button.grid(row=1, column=2, sticky="W", padx=5, pady=0)
         self.fireman_avail_label.grid(row=2, column=0, sticky="W", padx=25, pady=0)
-        self.fireman_avail_entry.grid(row=2, column=1, sticky="E", padx=0, pady=0)
-        self.fireman_avail_button.grid(row=2, column=2, sticky="W", padx=0, pady=0)
+        self.fireman_avail_entry.grid(row=2, column=1, sticky="EW", padx=0, pady=0)
+        self.fireman_avail_button.grid(row=2, column=2, sticky="W", padx=5, pady=0)
         self.trainee_avail_label.grid(row=3, column=0, sticky="W", padx=25, pady=0)
-        self.trainee_avail_entry.grid(row=3, column=1, sticky="E", padx=0, pady=0)
-        self.trainee_avail_button.grid(row=3, column=2, sticky="W", padx=0, pady=0)
+        self.trainee_avail_entry.grid(row=3, column=1, sticky="EW", padx=0, pady=0)
+        self.trainee_avail_button.grid(row=3, column=2, sticky="W", padx=5, pady=0)
         self.blank_roster_label.grid(row=4, column=0, sticky="W", padx=25, pady=20)
-        self.blank_roster_entry.grid(row=4, column=1, sticky="E", padx=0, pady=0)
-        self.blank_roster_button.grid(row=4, column=2, sticky="W", padx=0, pady=0)
+        self.blank_roster_entry.grid(row=4, column=1, sticky="EW", padx=0, pady=0)
+        self.blank_roster_button.grid(row=4, column=2, sticky="W", padx=5, pady=0)
         self.create_timetable_button.grid(row=5, column=1, sticky="E", padx=0, pady=15)
         self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
 
