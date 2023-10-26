@@ -19,14 +19,18 @@ def test_import_validation(tmp_path):
     assert os.path.exists(file)
 
     crew_reqs = Crew_Requirements()
-    crew_reqs.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
+    crew_reqs.expected_columns = {
+        "Timetable": object,
+        "Turn": np.int64,
+        "Points": np.int64,
+    }
 
     # When we import data
     crew_reqs.import_data(file)
 
     # Then the data imported is as expected
     expected_data = pd.DataFrame(
-        {"Timetable": ["Blue"], "Turn": [np.int32(1)], "Points": [np.int32(5)]}
+        {"Timetable": ["Blue"], "Turn": [np.int64(1)], "Points": [np.int64(5)]}
     )
     assert_frame_equal(crew_reqs.data_import, expected_data)
 
