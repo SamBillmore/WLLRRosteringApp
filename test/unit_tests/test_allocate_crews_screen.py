@@ -351,9 +351,15 @@ def test_errors_raised_correctly(asksaveasfilename, app):
     # Then the error is raised correctly
     assert app.visible_frame == "ErrorScreen"
     error_screen = app.frames["ErrorScreen"]
-    assert (
-        error_screen.error_message.get(1.0, END)
-        == "[Errno 2] No such file or directory: 'bad_path.csv'\n"
+    unix_err_msg = "[Errno 2] No such file or directory: 'bad_path.csv'\n"
+    win_err_msg = (
+        "[WinError 3] The system cannot find the path specified: 'bad_path.csv'\n"
+    )
+    assert any(
+        [
+            error_screen.error_message.get(1.0, END) == unix_err_msg,
+            error_screen.error_message.get(1.0, END) == win_err_msg,
+        ]
     )
 
 

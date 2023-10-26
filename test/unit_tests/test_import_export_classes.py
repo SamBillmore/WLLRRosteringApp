@@ -1,5 +1,6 @@
 import pytest
 import pandas as pd
+import numpy as np
 import re
 from pandas.testing import assert_frame_equal
 import os
@@ -18,13 +19,20 @@ def test_import_validation(tmp_path):
     assert os.path.exists(file)
 
     crew_reqs = Crew_Requirements()
-    crew_reqs.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
+    crew_reqs.expected_columns = {
+        "Timetable": object,
+        "Turn": np.int64,
+        "Points": np.int64,
+    }
 
     # When we import data
     crew_reqs.import_data(file)
 
     # Then the data imported is as expected
-    assert_frame_equal(crew_reqs.data_import, input_data)
+    expected_data = pd.DataFrame(
+        {"Timetable": ["Blue"], "Turn": [np.int64(1)], "Points": [np.int64(5)]}
+    )
+    assert_frame_equal(crew_reqs.data_import, expected_data)
 
 
 def test_import_validation_dates_excel(tmp_path):
@@ -94,9 +102,8 @@ def test_import_validation_incorrect_filetype(tmp_path):
     crew_reqs = Crew_Requirements()
 
     # When we try to import the data then the correct exception is raised
-    expected_error = (
-        f"The file {file} is not of the correct type. \nIt should be one of "
-    )
+    expected_error = f"The file {re.escape(str(file))} is not of the correct type. \n"
+    "It should be one of "
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
 
@@ -142,7 +149,9 @@ def test_import_validation_incorrect_dtype_date(tmp_path):
     crew_reqs.expected_columns = {"Date": object, "Timetable": object}
 
     # When we import data then the correct exception is raised
-    expected_error = f"The data in {file} is not of the correct type. \n"
+    expected_error = (
+        f"The data in {re.escape(str(file))} is not of the correct type. \n"
+    )
     "Unknown datetime string format, unable to parse: Date, at position 0"
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
@@ -163,7 +172,9 @@ def test_import_validation_incorrect_columns(tmp_path):
     crew_reqs.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
 
     # When we import data then the correct exception is raised
-    expected_error = f"The file {file} does not contain the correct columns. \n"
+    expected_error = (
+        f"The file {re.escape(str(file))} does not contain the correct columns. \n"
+    )
     f"The correct columns are {list(crew_reqs.expected_columns.keys())}"
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
@@ -188,6 +199,8 @@ def test_import_validation_no_data(tmp_path):
     crew_reqs.expected_columns = {"Timetable": object, "Turn": int, "Points": int}
 
     # When we import data then the correct exception is raised
-    expected_error = f"The file {file} does not contain any rows of data."
+    expected_error = (
+        f"The file {re.escape(str(file))} does not contain any rows of data."
+    )
     with pytest.raises(ValueError, match=expected_error):
         crew_reqs.import_data(file)
