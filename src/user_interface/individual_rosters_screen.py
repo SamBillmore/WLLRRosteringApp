@@ -80,6 +80,8 @@ class IndividualRostersScreen(Frame):
         )
         self.back_button.grid(row=4, column=0, sticky="W", padx=25, pady=20)
 
+        self.grid_columnconfigure(0, weight=1)
+
     @handle_errors
     def run_create_individual_rosters(
         self, final_roster_path, individual_roster_save_folder

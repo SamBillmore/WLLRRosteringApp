@@ -82,6 +82,8 @@ class ErrorScreen(Frame, ResourcePath):
         self.traceback_scrollbar.grid(row=5, column=1, sticky="NESW", padx=0, pady=20)
         self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
 
+        self.grid_columnconfigure(0, weight=1)
+
     def display_error_message(self, error_message):
         """Update self.error_message."""
         self.error_message.delete(1.0, END)

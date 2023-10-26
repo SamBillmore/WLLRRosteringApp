@@ -64,6 +64,8 @@ class BlankAvailabilityScreen(Frame):
         )
         self.back_button.grid(row=3, column=0, sticky="W", padx=25, pady=20)
 
+        self.grid_columnconfigure(0, weight=1)
+
     @handle_errors
     def run_create_blank_availability(self, timetable_path):
         """Creating blank availability forms."""

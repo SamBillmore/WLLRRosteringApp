@@ -31,3 +31,5 @@ class WaitScreen(Frame, ResourcePath):
         self.polite_label.grid(
             row=1, column=0, sticky="W", padx=25, pady=20, columnspan=2
         )
+
+        self.grid_columnconfigure(0, weight=1)

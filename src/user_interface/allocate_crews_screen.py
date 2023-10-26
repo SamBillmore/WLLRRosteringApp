@@ -117,6 +117,8 @@ class AllocateCrewsScreen(Frame):
         self.create_timetable_button.grid(row=5, column=1, sticky="E", padx=0, pady=15)
         self.back_button.grid(row=6, column=0, sticky="W", padx=25, pady=20)
 
+        self.grid_columnconfigure(0, weight=1)
+
     @handle_errors
     def run_create_master_roster(
         self,
