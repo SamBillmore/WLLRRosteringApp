@@ -36,7 +36,7 @@ class HomeScreen(Frame, ResourcePath):
         )
         self.step_1_label = Label(
             self,
-            text="Step 1: Set up input files",
+            text="Step 1: Set up input files and folders",
             bg=background_col,
             fg=foreground_col,
             font=font,
@@ -53,6 +53,14 @@ class HomeScreen(Frame, ResourcePath):
         self.step_1b_label = Label(
             self,
             text="\t(2) crew requirements for each colour timetable",
+            bg=background_col,
+            fg=foreground_col,
+            font=font,
+            anchor="w",
+        )
+        self.step_1c_label = Label(
+            self,
+            text="\t(3) folders for availability (by grade)",
             bg=background_col,
             fg=foreground_col,
             font=font,
@@ -144,29 +152,30 @@ class HomeScreen(Frame, ResourcePath):
         self.grid_columnconfigure(1, minsize=600)
         self.grid_columnconfigure(3, weight=2)
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(12, weight=3)
+        self.grid_rowconfigure(13, weight=3)
 
         self.picture.grid(row=1, column=1, padx=5, pady=5, columnspan=2)
         self.intro_label.grid(row=2, column=1, padx=0, pady=15, columnspan=2)
         self.step_1_label.grid(row=3, column=1, sticky="EW", padx=40, pady=0)
         self.step_1a_label.grid(row=4, column=1, sticky="EW", padx=40, pady=0)
         self.step_1b_label.grid(row=5, column=1, sticky="EW", padx=40, pady=0)
-        self.step_2_label.grid(row=6, column=1, sticky="EW", padx=40, pady=15)
-        self.step_3_label.grid(row=7, column=1, sticky="EW", padx=40, pady=10)
+        self.step_1c_label.grid(row=6, column=1, sticky="EW", padx=40, pady=0)
+        self.step_2_label.grid(row=7, column=1, sticky="EW", padx=40, pady=10)
+        self.step_3_label.grid(row=8, column=1, sticky="EW", padx=40, pady=10)
         self.step_4_label.grid(
-            row=8, column=1, sticky="EW", padx=40, pady=10, columnspan=2
+            row=9, column=1, sticky="EW", padx=40, pady=10, columnspan=2
         )
-        self.step_5_label.grid(row=9, column=1, sticky="EW", padx=40, pady=10)
-        self.step_6_label.grid(row=10, column=1, sticky="EW", padx=40, pady=10)
-        self.step_7_label.grid(row=11, column=1, sticky="EW", padx=40, pady=10)
+        self.step_5_label.grid(row=10, column=1, sticky="EW", padx=40, pady=10)
+        self.step_6_label.grid(row=11, column=1, sticky="EW", padx=40, pady=10)
+        self.step_7_label.grid(row=12, column=1, sticky="EW", padx=40, pady=10)
 
         self.step_1_button.grid(
             row=3, column=2, sticky="EW", padx=30, pady=0, rowspan=3
         )
-        self.step_2_button.grid(row=6, column=2, sticky="EW", padx=30, pady=0)
-        self.step_3_button.grid(row=7, column=2, sticky="EW", padx=30, pady=0)
-        self.step_5_button.grid(row=9, column=2, sticky="EW", padx=30, pady=0)
-        self.step_7_button.grid(row=11, column=2, sticky="EW", padx=30, pady=0)
+        self.step_2_button.grid(row=7, column=2, sticky="EW", padx=30, pady=0)
+        self.step_3_button.grid(row=8, column=2, sticky="EW", padx=30, pady=0)
+        self.step_5_button.grid(row=10, column=2, sticky="EW", padx=30, pady=0)
+        self.step_7_button.grid(row=12, column=2, sticky="EW", padx=30, pady=0)
 
     @handle_errors
     def run_create_example_base_inputs(self):
