@@ -18,7 +18,11 @@ def test_correct(askdirectory, app, tmp_path):
     askdirectory.return_value = output_dir
     home_screen.run_create_example_base_inputs()
 
-    # Then the files are created as expected
+    # Then the files and folders are created as expected
+    expected_folders = ["Driver", "Fireman", "Trainee"]
+    for grade in expected_folders:
+        expected_grade_path = os.path.join(output_dir, grade + " availability")
+        assert os.path.exists(expected_grade_path)
     expected_timetable_path = os.path.join(
         output_dir, "example_timetable_dates_colours.xlsx"
     )
