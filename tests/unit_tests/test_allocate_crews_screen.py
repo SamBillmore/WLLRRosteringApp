@@ -8,11 +8,11 @@ from tkinter import END
 @mock.patch("user_interface.allocate_crews_screen.filedialog.asksaveasfilename")
 def test_real_files(asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
-    input_working_file = "./test/unit_tests/input_data/Working Roster.xlsx"
+    input_working_file = "./tests/input_data/Working Roster.xlsx"
     assert os.path.exists(input_working_file)
-    input_driver_dir = "./test/unit_tests/input_data/01 Driver availability"
-    input_fireman_dir = "./test/unit_tests/input_data/02 Fireman availability"
-    input_trainee_dir = "./test/unit_tests/input_data/03 Trainee availability"
+    input_driver_dir = "./tests/input_data/01 Driver availability"
+    input_fireman_dir = "./tests/input_data/02 Fireman availability"
+    input_trainee_dir = "./tests/input_data/03 Trainee availability"
     assert os.path.exists(input_driver_dir)
     assert os.path.exists(input_fireman_dir)
     assert os.path.exists(input_trainee_dir)
@@ -366,11 +366,11 @@ def test_errors_raised_correctly(asksaveasfilename, app):
 @mock.patch("user_interface.allocate_crews_screen.filedialog.asksaveasfilename")
 def test_cancel(asksaveasfilename, app):
     # Given some input data and initial state
-    input_working_file = "./test/unit_tests/input_data/Working Roster.xlsx"
+    input_working_file = "./tests/input_data/Working Roster.xlsx"
     assert os.path.exists(input_working_file)
-    input_driver_dir = "./test/unit_tests/input_data/01 Driver availability"
-    input_fireman_dir = "./test/unit_tests/input_data/02 Fireman availability"
-    input_trainee_dir = "./test/unit_tests/input_data/03 Trainee availability"
+    input_driver_dir = "./tests/input_data/01 Driver availability"
+    input_fireman_dir = "./tests/input_data/02 Fireman availability"
+    input_trainee_dir = "./tests/input_data/03 Trainee availability"
     assert os.path.exists(input_driver_dir)
     assert os.path.exists(input_fireman_dir)
     assert os.path.exists(input_trainee_dir)

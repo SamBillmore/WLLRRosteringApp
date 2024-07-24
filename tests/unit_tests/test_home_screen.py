@@ -44,6 +44,7 @@ def test_correct(askdirectory, app, tmp_path):
     actual_timetable_data = pd.read_excel(
         expected_timetable_path, dtype={"Date": object, "Timetable": object}
     )
+    actual_timetable_data["Date"] = pd.to_datetime(actual_timetable_data["Date"])
     assert_frame_equal(actual_timetable_data, expected_timetable_data)
     expected_crew_reqs_data = pd.DataFrame(
         {

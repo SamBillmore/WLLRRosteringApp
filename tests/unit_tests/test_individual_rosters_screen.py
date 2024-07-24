@@ -4,7 +4,7 @@ from tkinter import END
 
 def test_real_file(app, tmp_path):
     # Given some input data and initial state
-    input_file = "./test/unit_tests/input_data/Final Roster.xlsx"
+    input_file = "./tests/input_data/Final Roster.xlsx"
     assert os.path.exists(input_file)
 
     individual_rosters_screen = app.frames["IndividualRostersScreen"]
