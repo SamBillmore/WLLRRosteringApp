@@ -41,6 +41,7 @@ class MasterAvailability(DataExports):
         master availability form.
         """
         for file_name in os.listdir(availability_folder):
+            self.validate_directory_contents(grade, availability_folder, file_name)
             crew_member = CrewMember()
             crew_member.name = file_name.split(".")[0]
             crew_member.grade = grade
@@ -49,6 +50,16 @@ class MasterAvailability(DataExports):
             crew_member.validate_data(file_path)
             self.append_availability(crew_member)
             self.crew_members.append(crew_member)
+
+    def validate_directory_contents(self, grade, availability_folder, file_name):
+            """Validates directory only contains files."""
+            filepath = os.path.join(availability_folder, file_name)
+            if os.path.isdir(filepath):
+                msg = (
+                    f"The directory {availability_folder} selected for grade {grade} contains {file_name} which is a directory and not a file. "
+                    "Please select a directory that only contains the availablility files received from crews."
+                )
+                raise ValueError(msg)
 
     def append_availability(self, crew_member):
         """Appends an individual's availability to the master list."""
