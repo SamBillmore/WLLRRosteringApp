@@ -54,9 +54,9 @@ def test_correct(asksaveasfilename, app, tmp_path):
 @mock.patch("user_interface.blank_roster_screen.filedialog.asksaveasfilename")
 def test_real_files(asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
-    input_timetable_file = "./test/unit_tests/input_data/Timetable.xlsx"
+    input_timetable_file = "./tests/input_data/Timetable.xlsx"
     assert os.path.exists(input_timetable_file)
-    input_crew_reqs_file = "./test/unit_tests/input_data/Crew requirements.csv"
+    input_crew_reqs_file = "./tests/input_data/Crew requirements.csv"
     assert os.path.exists(input_crew_reqs_file)
 
     blank_roster_screen = app.frames["BlankRosterScreen"]

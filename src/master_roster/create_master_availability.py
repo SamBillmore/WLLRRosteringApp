@@ -52,14 +52,16 @@ class MasterAvailability(DataExports):
             self.crew_members.append(crew_member)
 
     def validate_directory_contents(self, grade, availability_folder, file_name):
-            """Validates directory only contains files."""
-            filepath = os.path.join(availability_folder, file_name)
-            if os.path.isdir(filepath):
-                msg = (
-                    f"The directory {availability_folder} selected for grade {grade} contains {file_name} which is a directory and not a file. "
-                    "Please select a directory that only contains the availablility files received from crews."
-                )
-                raise ValueError(msg)
+        """Validates directory only contains files."""
+        filepath = os.path.join(availability_folder, file_name)
+        if os.path.isdir(filepath):
+            msg = (
+                f"The directory {availability_folder} selected for grade {grade} "
+                f"contains {file_name} which is a directory and not a file. "
+                "Please select a directory that only contains the availablility "
+                "files received from crews."
+            )
+            raise ValueError(msg)
 
     def append_availability(self, crew_member):
         """Appends an individual's availability to the master list."""

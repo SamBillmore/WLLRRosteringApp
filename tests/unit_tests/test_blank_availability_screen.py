@@ -35,7 +35,7 @@ def test_correct(asksaveasfilename, app, tmp_path):
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
 def test_real_file(asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
-    input_file = "./test/unit_tests/input_data/Timetable.xlsx"
+    input_file = "./tests/input_data/Timetable.xlsx"
     assert os.path.exists(input_file)
 
     blank_availability_screen = app.frames["BlankAvailabilityScreen"]
