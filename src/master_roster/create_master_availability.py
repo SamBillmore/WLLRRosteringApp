@@ -97,7 +97,7 @@ class MasterAvailability(DataExports):
     ):
         """Raises error if directories found in availability directory."""
         directories_string = ""
-        for directory in directories_in_availability_folder:
+        for directory in directories_in_availability_folder.sort():
             directories_string = directories_string + f"- {directory}\n"
         msg = (
             f"Unexpected directories found within {availability_folder} "
