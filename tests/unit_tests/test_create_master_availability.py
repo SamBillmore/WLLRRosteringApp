@@ -234,7 +234,7 @@ def test_create_master_availability_directory_in_input_data(tmp_path):
     driver_dir.mkdir()
     incorrect_dir_1 = driver_dir / "incorrect directory 1"
     incorrect_dir_1.mkdir()
-    incorrect_dir_2 = tmp_path / "incorrect directory 2"
+    incorrect_dir_2 = driver_dir / "incorrect directory 2"
     incorrect_dir_2.mkdir()
     driver_1_file = driver_dir / "driver 1.xlsx"
     driver_1_data = pd.DataFrame(
