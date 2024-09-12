@@ -257,7 +257,7 @@ def test_create_master_availability_directory_in_input_data(tmp_path):
     trainee_dir.mkdir()
 
     # When we run the function
-    expected_error = (
+    expected_error = re.escape(
         f"Unexpected directories found within {driver_dir} "
         "(selected as the location for Driver availability files).\n\n"
         "Directories found:\n"
