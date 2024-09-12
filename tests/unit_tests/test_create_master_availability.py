@@ -258,13 +258,15 @@ def test_create_master_availability_directory_in_input_data(tmp_path):
 
     # When we run the function then the correct error is raised
     expected_error = re.escape(
-        f"Unexpected directories found within {driver_dir} "
-        "(selected as the location for Driver availability files).\n\n"
-        "Directories found:\n"
+        "Error getting the Driver availability files from the directory: "
+        "driver data\n\n"
+        "Did you mean to select one of the following locations?\n"
         "- incorrect directory 1\n"
         "- incorrect directory 2\n\n"
-        "Please select a directory that only contains the availablility "
-        "files received from crews."
+        "When selecting the location of the availability files, please "
+        "DOUBLE CLICK on the directory name to select it.\n\n"
+        "The directory should only contain the availability files and nothing else.\n\n"
+        f"Full selected location: {driver_dir}"
     )
     with pytest.raises(ValueError, match=expected_error):
         create_master_availability(

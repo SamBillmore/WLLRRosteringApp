@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import os
@@ -101,12 +102,15 @@ class MasterAvailability(DataExports):
         for directory in directories_in_availability_folder:
             directories_string = directories_string + f"- {directory}\n"
         msg = (
-            f"Unexpected directories found within {availability_folder} "
-            f"(selected as the location for {grade} availability files).\n\n"
-            "Directories found:\n"
+            "Error getting the {grade} availability files from the directory: "
+            f"{Path(availability_folder).name}\n\n"
+            "Did you mean to select one of the following locations?\n"
             f"{directories_string}\n"
-            "Please select a directory that only contains the availablility "
-            "files received from crews."
+            "When selecting the location of the availability files, please "
+            "DOUBLE CLICK on the directory name to select it.\n\n"
+            "The directory should only contain the availability files and "
+            "nothing else.\n\n"
+            f"Full selected location: {availability_folder}"
         )
         raise ValueError(msg)
 
