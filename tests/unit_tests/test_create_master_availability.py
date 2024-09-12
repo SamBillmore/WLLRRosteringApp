@@ -226,3 +226,49 @@ def test_create_master_availability_extra_column_not_captured(tmp_path):
         }
     )
     assert_frame_equal(actual.data_export, expected)
+
+
+def test_create_master_availability_directory_in_input_data(tmp_path):
+    # Given some input data
+    driver_dir = tmp_path / "driver data"
+    driver_dir.mkdir()
+    incorrect_dir_1 = driver_dir / "incorrect directory 1"
+    incorrect_dir_1.mkdir()
+    incorrect_dir_2 = tmp_path / "incorrect directory 2"
+    incorrect_dir_2.mkdir()
+    driver_1_file = driver_dir / "driver 1.xlsx"
+    driver_1_data = pd.DataFrame(
+        {
+            "Date": [
+                pd.to_datetime("21/01/2023", dayfirst=True),
+                pd.to_datetime("22/01/2023", dayfirst=True),
+            ],
+            "Available": ["Y", None],
+            None: ["bad entry", None],
+        }
+    )
+    driver_1_data.to_excel(driver_1_file, index=False)
+    assert os.path.exists(driver_1_file)
+
+    fireman_dir = tmp_path / "fireman data"
+    fireman_dir.mkdir()
+
+    trainee_dir = tmp_path / "trainee data"
+    trainee_dir.mkdir()
+
+    # When we run the function
+    expected_error = (
+        f"Unexpected directories found within {driver_dir} "
+        "(selected as the location for Driver availability files).\n\n"
+        "Directories found:\n"
+        "- incorrect directory 1\n"
+        "- incorrect directory 2\n\n"
+        "Please select a directory that only contains the availablility "
+        "files received from crews."
+    )
+    with pytest.raises(ValueError, match=expected_error):
+        create_master_availability(
+            driver_availability_folder=driver_dir,
+            fireman_availability_folder=fireman_dir,
+            trainee_availability_folder=trainee_dir,
+        )
