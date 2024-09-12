@@ -102,7 +102,7 @@ class MasterAvailability(DataExports):
         for directory in directories_in_availability_folder:
             directories_string = directories_string + f"- {directory}\n"
         msg = (
-            "Error getting the {grade} availability files from the directory: "
+            f"Error getting the {grade} availability files from the directory: "
             f"{Path(availability_folder).name}\n\n"
             "Did you mean to select one of the following locations?\n"
             f"{directories_string}\n"
