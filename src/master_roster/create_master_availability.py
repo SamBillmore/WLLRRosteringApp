@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import os
@@ -40,28 +41,41 @@ class MasterAvailability(DataExports):
         Creates individual crew member objects and adds to crew_members list. Creates
         master availability form.
         """
-        for file_name in os.listdir(availability_folder):
-            self.validate_directory_contents(grade, availability_folder, file_name)
-            crew_member = CrewMember()
-            crew_member.name = file_name.split(".")[0]
-            crew_member.grade = grade
-            file_path = os.path.join(availability_folder, file_name)
-            crew_member.import_data(file_path)
-            crew_member.validate_data(file_path)
-            self.append_availability(crew_member)
-            self.crew_members.append(crew_member)
-
-    def validate_directory_contents(self, grade, availability_folder, file_name):
-        """Validates directory only contains files."""
-        filepath = os.path.join(availability_folder, file_name)
-        if os.path.isdir(filepath):
-            msg = (
-                f"The directory {availability_folder} selected for grade {grade} "
-                f"contains {file_name} which is a directory and not a file. "
-                "Please select a directory that only contains the availablility "
-                "files received from crews."
+        directories_in_availability_folder = []
+        for path in os.listdir(availability_folder):
+            path_is_directory = self.check_path_is_directory(
+                grade, availability_folder, path
             )
-            raise ValueError(msg)
+            if path_is_directory:
+                directories_in_availability_folder.append(path)
+            if len(directories_in_availability_folder) == 0:
+                self.create_crew_member_object(
+                    grade=grade,
+                    availability_folder=availability_folder,
+                    path=path,
+                )
+        if len(directories_in_availability_folder) > 0:
+            self.raise_directories_found_error(
+                directories_in_availability_folder=directories_in_availability_folder,
+                availability_folder=availability_folder,
+                grade=grade,
+            )
+
+    def create_crew_member_object(self, grade, availability_folder, path):
+        """Creates a single crew member object."""
+        crew_member = CrewMember()
+        crew_member.name = path.split(".")[0]
+        crew_member.grade = grade
+        file_path = os.path.join(availability_folder, path)
+        crew_member.import_data(file_path)
+        crew_member.validate_data(file_path)
+        self.append_availability(crew_member)
+        self.crew_members.append(crew_member)
+
+    def check_path_is_directory(self, grade, availability_folder, path):
+        """Validates directory only contains files."""
+        path_to_validate = os.path.join(availability_folder, path)
+        return os.path.isdir(path_to_validate)
 
     def append_availability(self, crew_member):
         """Appends an individual's availability to the master list."""
@@ -78,6 +92,27 @@ class MasterAvailability(DataExports):
         self.data_export = self.data_export[
             self.data_export[StandardLabels.available] == StandardLabels.y
         ]
+
+    def raise_directories_found_error(
+        self, directories_in_availability_folder, availability_folder, grade
+    ):
+        """Raises error if directories found in availability directory."""
+        directories_string = ""
+        directories_in_availability_folder.sort()
+        for directory in directories_in_availability_folder:
+            directories_string = directories_string + f"- {directory}\n"
+        msg = (
+            f"Error getting the {grade} availability files from the directory: "
+            f"{Path(availability_folder).name}\n\n"
+            "Did you mean to select one of the following locations?\n"
+            f"{directories_string}\n"
+            "When selecting the location of the availability files, please "
+            "DOUBLE CLICK on the directory name to select it.\n\n"
+            "The directory should only contain the availability files and "
+            "nothing else.\n\n"
+            f"Full selected location: {availability_folder}"
+        )
+        raise ValueError(msg)
 
 
 class CrewMember(DataImports):
