@@ -6,7 +6,8 @@ from tkinter import END
 
 
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
-def test_correct(asksaveasfilename, app, tmp_path):
+@mock.patch("user_interface.blank_availability_screen.messagebox.askyesno")
+def test_correct(askyesno, asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
     dir = tmp_path / "data"
     dir.mkdir()
@@ -21,6 +22,7 @@ def test_correct(asksaveasfilename, app, tmp_path):
 
     # When we run the function
     asksaveasfilename.return_value = output_file
+    askyesno.return_value = False
     blank_availability_screen.run_create_blank_availability(input_file)
 
     # Then the file is created as expected
@@ -33,7 +35,8 @@ def test_correct(asksaveasfilename, app, tmp_path):
 
 
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
-def test_real_file(asksaveasfilename, app, tmp_path):
+@mock.patch("user_interface.blank_availability_screen.messagebox.askyesno")
+def test_real_file(askyesno, asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
     input_file = "./tests/input_data/Timetable.xlsx"
     assert os.path.exists(input_file)
@@ -46,6 +49,7 @@ def test_real_file(asksaveasfilename, app, tmp_path):
 
     # When we run the function
     asksaveasfilename.return_value = output_file
+    askyesno.return_value = False
     blank_availability_screen.run_create_blank_availability(input_file)
 
     # Then the file is created as expected
@@ -72,13 +76,15 @@ def test_real_file(asksaveasfilename, app, tmp_path):
 
 
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
-def test_errors_raised_correctly(asksaveasfilename, app):
+@mock.patch("user_interface.blank_availability_screen.messagebox.askyesno")
+def test_errors_raised_correctly(askyesno, asksaveasfilename, app):
     # Given an initial state and inputs that will raise an error
     blank_availability_screen = app.frames["BlankAvailabilityScreen"]
     file_name = "bad_path.csv"
 
     # When we run the function
     asksaveasfilename.return_value = "dummy_location.xlsx"
+    askyesno.return_value = False
     blank_availability_screen.run_create_blank_availability(file_name)
 
     # Then the error is raised correctly
