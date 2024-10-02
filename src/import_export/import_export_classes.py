@@ -81,11 +81,19 @@ class DataExports:
         self.data_export = None
         self.entry_values = [StandardLabels.y, StandardLabels.n]
 
-    def export_data(self, filepath, sheet_name, data_val_cells=None):
+    def export_data(
+        self,
+        filepath,
+        sheet_name,
+        data_val_cells=None,
+        editable_cells=None,
+        password=None,
+    ):
         """Exports data to a .xlsx.
 
         Includes formatting of columns and header. Adds data validation to cells
-        specified in data_val_cells.
+        specified in data_val_cells. Protects all cells except those specified in
+        editable_cells. If a password is provided, also password protects the worksheet.
         """
         writer = pd.ExcelWriter(
             filepath,
@@ -97,13 +105,39 @@ class DataExports:
         workbook = writer.book
         worksheet = writer.sheets[sheet_name]
         workbook.add_format({"border": 1})
+
+        # Create locked and unlocked formats
+        locked_format = workbook.add_format({"locked": True})
+        unlocked_format = workbook.add_format({"locked": False})
+        # Lock all cells
+        worksheet.set_column(0, worksheet.dim_colmax, None, locked_format)
+        # Unlock specified cells
+        if editable_cells:
+            for cell in editable_cells:
+                worksheet.write(cell, None, unlocked_format)
+
+        # Autofit column widths
+        for col_num, value in enumerate(self.data_export.columns.values):
+            max_len = (
+                max(self.data_export[value].astype(str).map(len).max(), len(str(value)))
+                + 6
+            )  # Add a little extra space
+            worksheet.set_column(col_num, col_num, max_len)
+
+        # Add data validation if specified
         if data_val_cells:
             for i in data_val_cells:
                 worksheet.data_validation(
                     i, {"validate": "list", "source": self.entry_values}
                 )
+
+        # Protect the worksheet (with or without password)
+        if password:
+            worksheet.protect(password)
+        else:
+            worksheet.protect()
+
         writer.close()
-        self.autofit_columns(filepath, sheet_name)
 
     def autofit_columns(self, filepath, sheet_name):
         """Auto adjusts the width of columns in a specific worksheet of an Excel

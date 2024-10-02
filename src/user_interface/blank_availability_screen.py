@@ -3,6 +3,8 @@ from tkinter import Button
 from tkinter import Label
 from tkinter import Entry
 from tkinter import filedialog
+from tkinter import simpledialog
+from tkinter import messagebox
 
 from blank_availability.create_blank_availability import create_blank_availability
 from error_handling.error_handling_decorator import handle_errors
@@ -75,11 +77,37 @@ class BlankAvailabilityScreen(Frame):
 
     @handle_errors
     def run_create_blank_availability(self, timetable_path):
-        """Creating blank availability forms."""
+        """Creating blank availability forms with optional password protection."""
         save_location = filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
         if save_location:
+            # Ask user if they want to password protect the file
+            use_password = messagebox.askyesno(
+                "Password Protection", "Do you want to password protect the file?"
+            )
+
+            password = None
+            if use_password:
+                while password is None:
+                    password_1 = simpledialog.askstring(
+                        "Password", "Enter password for file protection:", show="*"
+                    )
+                    if password_1 is None:
+                        messagebox.showinfo(
+                            "Cancelled",
+                            "Password protection cancelled. File will not be password "
+                            "protected.",
+                        )
+                        password = None
+                        break
+                    password_2 = simpledialog.askstring(
+                        "Password", "Re-enter password for file protection:", show="*"
+                    )
+                    if password_1 == password_2:
+                        password = password_1
+                    else:
+                        messagebox.showerror("Password Error", "Passwords do not match")
             self.controller.show_frame("WaitScreen")
-            create_blank_availability(timetable_path, save_location)
+            create_blank_availability(timetable_path, save_location, password=password)
             self.controller.show_frame("HomeScreen")

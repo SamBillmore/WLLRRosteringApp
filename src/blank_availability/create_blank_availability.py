@@ -5,12 +5,14 @@ from import_export.import_export_classes import DataExports
 from standard_labels.standard_labels import StandardLabels
 
 
-def create_blank_availability(timetable_path, save_location):
+def create_blank_availability(timetable_path, save_location, password=None):
     timetable = Timetable()
     availability_form = Availability_Form()
-    timetable.import_data(timetable_path)
-    availability_form.get_timetable_dates(timetable)
-    availability_form.create_availability_form(save_location)
+    timetable.import_data(file_path=timetable_path)
+    availability_form.get_timetable_dates(timetable=timetable)
+    availability_form.create_availability_form(
+        save_location=save_location, password=password
+    )
 
 
 class Timetable(DataImports):
@@ -39,12 +41,16 @@ class Availability_Form(DataExports):
         """Populates self.dates from the dates in a timetable."""
         self.dates = timetable.data_import[StandardLabels.date]
 
-    def create_availability_form(self, save_location):
+    def create_availability_form(self, save_location, password=None):
         """Creates a .xlsx document with self.dates, self.columns and limits the entry
         values to self.entry_values."""
         sheet_name = "Availability"
         self.data_export = pd.DataFrame(self.dates, columns=self.columns)
-        data_val_cells = ["B" + str(i + 2) for i in self.data_export.index]
+        data_entry_cells = ["B" + str(i + 2) for i in self.data_export.index]
         self.export_data(
-            filepath=save_location, sheet_name=sheet_name, data_val_cells=data_val_cells
+            filepath=save_location,
+            sheet_name=sheet_name,
+            data_val_cells=data_entry_cells,
+            editable_cells=data_entry_cells,
+            password=password,
         )
