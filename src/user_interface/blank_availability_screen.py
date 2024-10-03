@@ -77,37 +77,62 @@ class BlankAvailabilityScreen(Frame):
 
     @handle_errors
     def run_create_blank_availability(self, timetable_path):
-        """Creating blank availability forms with optional password protection."""
-        save_location = filedialog.asksaveasfilename(
+        """Create blank availability forms with optional password protection."""
+        save_location = self.get_save_location()
+        if not save_location:
+            return
+
+        password_result = self.get_password_if_requested()
+        if password_result == "cancelled":
+            return
+
+        self.create_blank_availability(timetable_path, save_location, password_result)
+
+    def get_save_location(self):
+        return filedialog.asksaveasfilename(
             title="Choose a save location", defaultextension=".xlsx"
         )
-        if save_location:
-            # Ask user if they want to password protect the file
-            use_password = messagebox.askyesno(
-                "Password Protection", "Do you want to password protect the file?"
-            )
 
-            password = None
-            if use_password:
-                while password is None:
-                    password_1 = simpledialog.askstring(
-                        "Password", "Enter password for file protection:", show="*"
-                    )
-                    if password_1 is None:
-                        messagebox.showinfo(
-                            "Cancelled",
-                            "Password protection cancelled. File will not be password "
-                            "protected.",
-                        )
-                        password = None
-                        break
-                    password_2 = simpledialog.askstring(
-                        "Password", "Re-enter password for file protection:", show="*"
-                    )
-                    if password_1 == password_2:
-                        password = password_1
-                    else:
-                        messagebox.showerror("Password Error", "Passwords do not match")
-            self.controller.show_frame("WaitScreen")
-            create_blank_availability(timetable_path, save_location, password=password)
-            self.controller.show_frame("HomeScreen")
+    def get_password_if_requested(self):
+        use_password = messagebox.askyesno(
+            "Password Protection",
+            "Do you want to add a password to the protection on the file?",
+        )
+        if not use_password:
+            return None
+
+        while True:
+            password = self.prompt_for_password()
+            if password == "cancelled":
+                return "cancelled"
+
+            if self.confirm_password(password):
+                return password
+            # If passwords don't match, the loop continues
+
+    def prompt_for_password(self):
+        password = simpledialog.askstring(
+            "Password", "Enter password for file protection:", show="*"
+        )
+        if password is None:
+            messagebox.showinfo(
+                "Cancelled", "Password protection process cancelled. File not created."
+            )
+            return "cancelled"
+        return password
+
+    def confirm_password(self, password):
+        confirmation = simpledialog.askstring(
+            "Password", "Re-enter password for file protection:", show="*"
+        )
+        if password != confirmation:
+            messagebox.showerror(
+                "Password Error", "Passwords do not match. Please try again."
+            )
+            return False
+        return True
+
+    def create_blank_availability(self, timetable_path, save_location, password):
+        self.controller.show_frame("WaitScreen")
+        create_blank_availability(timetable_path, save_location, password=password)
+        self.controller.show_frame("HomeScreen")
