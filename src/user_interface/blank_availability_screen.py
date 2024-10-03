@@ -108,7 +108,6 @@ class BlankAvailabilityScreen(Frame):
 
             if self.confirm_password(password):
                 return password
-            # If passwords don't match, the loop continues
 
     def prompt_for_password(self):
         password = simpledialog.askstring(
@@ -116,7 +115,9 @@ class BlankAvailabilityScreen(Frame):
         )
         if password is None:
             messagebox.showinfo(
-                "Cancelled", "Password protection process cancelled. File not created."
+                "Cancelled",
+                "No password set. Password protection process cancelled. "
+                "File not created.",
             )
             return "cancelled"
         return password
