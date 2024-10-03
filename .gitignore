@@ -54,3 +54,6 @@ docs/_build/
 
 # Project management
 todo.txt
+
+# Temporary files
+/tmp/
