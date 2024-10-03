@@ -89,55 +89,49 @@ class DataExports:
         editable_cells=None,
         password=None,
     ):
-        """Exports data to a .xlsx.
-
-        Includes formatting of columns and header. Adds data validation to cells
-        specified in data_val_cells. Protects all cells except those specified in
-        editable_cells. If a password is provided, also password protects the worksheet.
-        """
-        writer = pd.ExcelWriter(
+        """Exports data to a .xlsx with formatting and optional protection."""
+        with pd.ExcelWriter(
             filepath,
             engine="xlsxwriter",
             date_format="ddd dd-mm-yyyy",
             datetime_format="ddd dd-mm-yyyy",
-        )
-        self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
-        workbook = writer.book
-        worksheet = writer.sheets[sheet_name]
+        ) as writer:
+            self.data_export.to_excel(writer, sheet_name=sheet_name, index=False)
+            workbook = writer.book
+            worksheet = writer.sheets[sheet_name]
+
+            self.format_worksheet(worksheet, workbook)
+            self.add_data_validation(worksheet, data_val_cells)
+            self.protect_worksheet(worksheet, workbook, editable_cells, password)
+
+    def format_worksheet(self, worksheet, workbook):
+        """Format the worksheet."""
         workbook.add_format({"border": 1})
-
-        # Create locked and unlocked formats
-        locked_format = workbook.add_format({"locked": True})
-        unlocked_format = workbook.add_format({"locked": False})
-        # Lock all cells
-        worksheet.set_column(0, worksheet.dim_colmax, None, locked_format)
-        # Unlock specified cells
-        if editable_cells:
-            for cell in editable_cells:
-                worksheet.write(cell, None, unlocked_format)
-
-        # Autofit column widths
         for col_num, value in enumerate(self.data_export.columns.values):
             max_len = (
                 max(self.data_export[value].astype(str).map(len).max(), len(str(value)))
                 + 6
-            )  # Add a little extra space
+            )  # Include a little extra space to avoid #########
             worksheet.set_column(col_num, col_num, max_len)
 
-        # Add data validation if specified
+    def add_data_validation(self, worksheet, data_val_cells):
+        """Add data validation to specified cells."""
         if data_val_cells:
-            for i in data_val_cells:
+            for cell in data_val_cells:
                 worksheet.data_validation(
-                    i, {"validate": "list", "source": self.entry_values}
+                    cell, {"validate": "list", "source": self.entry_values}
                 )
 
-        # Protect the worksheet (with or without password)
+    def protect_worksheet(self, worksheet, workbook, editable_cells, password):
+        """Protect the worksheet if a password is provided."""
         if password:
+            locked_format = workbook.add_format({"locked": True})
+            unlocked_format = workbook.add_format({"locked": False})
+            worksheet.set_column(0, worksheet.dim_colmax, None, locked_format)
+            if editable_cells:
+                for cell in editable_cells:
+                    worksheet.write(cell, None, unlocked_format)
             worksheet.protect(password)
-        else:
-            worksheet.protect()
-
-        writer.close()
 
     def autofit_columns(self, filepath, sheet_name):
         """Auto adjusts the width of columns in a specific worksheet of an Excel
