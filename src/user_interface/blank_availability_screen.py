@@ -5,6 +5,7 @@ from tkinter import Entry
 from tkinter import filedialog
 from tkinter import simpledialog
 from tkinter import messagebox
+from tkinter import Toplevel
 
 from blank_availability.create_blank_availability import create_blank_availability
 from error_handling.error_handling_decorator import handle_errors
@@ -94,11 +95,17 @@ class BlankAvailabilityScreen(Frame):
         )
 
     def get_password_if_requested(self):
-        use_password = messagebox.askyesno(
-            "Password Protection",
-            "Do you want to add a password to the protection on the file?",
+        result = self.custom_yes_no_dialog(
+            "Password Protection", "Do you want to protect the file with a password?"
         )
-        if not use_password:
+
+        if result == "cancelled":
+            messagebox.showinfo(
+                "Cancelled",
+                "File creation process cancelled. File not created.",
+            )
+            return "cancelled"
+        if result == "no":
             return None
 
         while True:
@@ -108,6 +115,33 @@ class BlankAvailabilityScreen(Frame):
 
             if self.confirm_password(password):
                 return password
+
+    def custom_yes_no_dialog(self, title, message):
+        dialog = Toplevel(self)
+        dialog.title(title)
+        dialog.geometry("300x100")
+        dialog.resizable(False, False)
+        dialog.grab_set()  # blocks interaction with the main window
+
+        Label(dialog, text=message, wraplength=250).pack(pady=10)
+
+        result = {"value": "cancelled"}
+
+        def on_yes():
+            result["value"] = "yes"
+            dialog.destroy()
+
+        def on_no():
+            result["value"] = "no"
+            dialog.destroy()
+
+        Button(dialog, text="Yes", command=on_yes).pack(side="left", expand=True)
+        Button(dialog, text="No", command=on_no).pack(side="right", expand=True)
+
+        dialog.protocol("WM_DELETE_WINDOW", dialog.destroy)  # Handle the close button
+
+        self.wait_window(dialog)
+        return result["value"]
 
     def prompt_for_password(self):
         password = simpledialog.askstring(
