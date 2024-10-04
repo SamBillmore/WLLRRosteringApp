@@ -6,7 +6,10 @@ from tkinter import END
 
 
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
-@mock.patch("user_interface.blank_availability_screen.messagebox.askyesno")
+@mock.patch(
+    "user_interface.blank_availability_screen."
+    "BlankAvailabilityScreen.custom_yes_no_dialog"
+)
 def test_correct(askyesno, asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
     dir = tmp_path / "data"
@@ -22,7 +25,7 @@ def test_correct(askyesno, asksaveasfilename, app, tmp_path):
 
     # When we run the function
     asksaveasfilename.return_value = output_file
-    askyesno.return_value = False
+    askyesno.return_value = "no"
     blank_availability_screen.run_create_blank_availability(input_file)
 
     # Then the file is created as expected
@@ -35,7 +38,10 @@ def test_correct(askyesno, asksaveasfilename, app, tmp_path):
 
 
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
-@mock.patch("user_interface.blank_availability_screen.messagebox.askyesno")
+@mock.patch(
+    "user_interface.blank_availability_screen."
+    "BlankAvailabilityScreen.custom_yes_no_dialog"
+)
 def test_real_file(askyesno, asksaveasfilename, app, tmp_path):
     # Given some input data and initial state
     input_file = "./tests/input_data/Timetable.xlsx"
@@ -49,7 +55,7 @@ def test_real_file(askyesno, asksaveasfilename, app, tmp_path):
 
     # When we run the function
     asksaveasfilename.return_value = output_file
-    askyesno.return_value = False
+    askyesno.return_value = "no"
     blank_availability_screen.run_create_blank_availability(input_file)
 
     # Then the file is created as expected
@@ -76,7 +82,10 @@ def test_real_file(askyesno, asksaveasfilename, app, tmp_path):
 
 
 @mock.patch("user_interface.blank_availability_screen.filedialog.asksaveasfilename")
-@mock.patch("user_interface.blank_availability_screen.messagebox.askyesno")
+@mock.patch(
+    "user_interface.blank_availability_screen."
+    "BlankAvailabilityScreen.custom_yes_no_dialog"
+)
 def test_errors_raised_correctly(askyesno, asksaveasfilename, app):
     # Given an initial state and inputs that will raise an error
     blank_availability_screen = app.frames["BlankAvailabilityScreen"]
@@ -84,7 +93,7 @@ def test_errors_raised_correctly(askyesno, asksaveasfilename, app):
 
     # When we run the function
     asksaveasfilename.return_value = "dummy_location.xlsx"
-    askyesno.return_value = False
+    askyesno.return_value = "no"
     blank_availability_screen.run_create_blank_availability(file_name)
 
     # Then the error is raised correctly
